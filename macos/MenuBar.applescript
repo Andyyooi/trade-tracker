@@ -195,7 +195,7 @@ on colourBar_amount_(barItem, amount)
 end colourBar_amount_
 
 on openDashboard_(sender)
-	current application's NSWorkspace's sharedWorkspace()'s openURL:(current application's NSURL's URLWithString:"http://127.0.0.1:8080/index.html")
+	current application's NSWorkspace's sharedWorkspace()'s openURL:(current application's NSURL's URLWithString:"https://trade-tracker-andees.vercel.app/")
 end openDashboard_
 
 on quitApp_(sender)

@@ -21,21 +21,43 @@ function localTradesUrl() {
 async function refreshLive() {
   const host = window.location.hostname;
   const local = host === "localhost" || host === "127.0.0.1";
+  // Prefer same-origin trades.json on Vercel (deployed from the repo), then gist/raw.
   const urls = local
-    ? [localTradesUrl(), GIST_TRADES_URL + `?t=${Date.now()}`]
-    : [GIST_TRADES_URL + `?t=${Date.now()}`, GITHUB_TRADES_URL + `?t=${Date.now()}`, localTradesUrl()];
+    ? [localTradesUrl(), `${GIST_TRADES_URL}?t=${Date.now()}`]
+    : [
+      localTradesUrl(),
+      `${GIST_TRADES_URL}?t=${Date.now()}`,
+      `${GITHUB_TRADES_URL}?t=${Date.now()}`,
+    ];
 
+  let lastError = null;
   for (const url of urls) {
     try {
       const res = await fetch(url, { cache: "no-store" });
-      if (!res.ok) continue;
-      const data = await res.json();
+      if (!res.ok) {
+        lastError = `${url} → ${res.status}`;
+        continue;
+      }
+      const text = await res.text();
+      const data = JSON.parse(text);
       if (Array.isArray(data?.trades) && data.trades.length) {
         loadTrades(data.trades, { persist: true });
+        const meta = document.getElementById("metaLine");
+        if (meta && !state.trades.length) {
+          /* render() will overwrite */
+        }
         return;
       }
-    } catch {
-      /* try next source */
+      lastError = `${url} → empty trades`;
+    } catch (err) {
+      lastError = `${url} → ${err.message || err}`;
+    }
+  }
+  if (!state.trades.length && lastError) {
+    const empty = document.getElementById("empty");
+    if (empty) {
+      empty.hidden = false;
+      empty.innerHTML = `Could not load trade feed.<br><small>${lastError}</small><br>Check that <code>trades.json</code> is in the GitHub repo and Vercel has redeployed.`;
     }
   }
 }
@@ -416,19 +438,6 @@ document.querySelectorAll(".kpi").forEach((el) => {
     render();
   });
 });
-
-async function refreshLive() {
-  try {
-    const res = await fetch(tradesFeedUrl(), { cache: "no-store" });
-    if (!res.ok) return;
-    const data = await res.json();
-    if (Array.isArray(data?.trades) && data.trades.length) {
-      loadTrades(data.trades, { persist: true });
-    }
-  } catch {
-    /* Local Mac / first Vercel load may not have a feed yet */
-  }
-}
 
 if (window.IMPORTED_TRADES?.trades?.length) {
   loadTrades(window.IMPORTED_TRADES.trades, { persist: false });
