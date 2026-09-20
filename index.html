@@ -16,12 +16,13 @@
       <p class="subtitle" id="metaLine">Import an MT5 ReportHistory .xlsx to get started</p>
     </div>
     <div class="actions">
+      <button class="btn" id="homeBtn" type="button" hidden>All trades</button>
       <input id="fileInput" class="hidden-input" type="file" accept=".xlsx,.xls,.csv" />
       <button class="btn btn-gold" id="importBtn" type="button">Import MT5 report</button>
     </div>
   </header>
 
-  <section id="empty" class="chart-card empty">
+  <section id="empty" class="chart-card empty" hidden>
     Waiting for trade data. On your Mac, keep MT5 open with the export expert and run <code>ruby watch-export.rb</code> so this site can pull the latest snapshot from GitHub.
   </section>
 
@@ -45,6 +46,12 @@
       </article>
     </section>
 
+    <section id="rangeEmpty" class="chart-card empty" hidden>
+      <p id="rangeEmptyText">No closed trades in this period.</p>
+      <button class="btn btn-gold" id="showAllBtn" type="button">Show all trades</button>
+    </section>
+
+    <div id="dashboardBody">
     <section class="stats">
       <article class="stat">
         <div class="label">Trades</div>
@@ -108,6 +115,7 @@
         </table>
       </div>
     </section>
+    </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>

@@ -292,6 +292,18 @@ function renderTable(trades) {
   }).join("");
 }
 
+function rangeLabel(range) {
+  if (range === "today") return "today";
+  if (range === "week") return "this week";
+  if (range === "month") return "this month";
+  return "all imported trades";
+}
+
+function goHome() {
+  state.range = "all";
+  render();
+}
+
 function render() {
   const now = new Date();
   const all = state.trades;
@@ -314,23 +326,44 @@ function render() {
   setText("statPF", Number.isFinite(s.profitFactor) ? s.profitFactor.toFixed(2) : "—");
   setText("statAvgWin", currency.format(s.avgWin), true);
   setText("statAvgLoss", currency.format(-s.avgLoss), true);
-  document.getElementById("metaLine").textContent = all.length
-    ? `${all.length} closed positions · break-even is net −$${BE_LOSS_MAX.toFixed(2)} to +$${BE_PROFIT_MAX.toFixed(2)} · click a P&L card to filter`
-    : "Import an MT5 ReportHistory .xlsx to get started";
+
+  const homeBtn = document.getElementById("homeBtn");
+  homeBtn.hidden = !all.length || state.range === "all";
 
   document.querySelectorAll(".kpi").forEach((el) => {
     el.classList.toggle("active", el.dataset.range === state.range);
   });
 
-  if (filtered.length) {
-    document.getElementById("empty").hidden = true;
-    document.getElementById("dashboard").hidden = false;
-    renderCharts(filtered);
-    renderTable(filtered);
-  } else {
-    document.getElementById("dashboard").hidden = true;
-    document.getElementById("empty").hidden = false;
+  const empty = document.getElementById("empty");
+  const dashboard = document.getElementById("dashboard");
+  const rangeEmpty = document.getElementById("rangeEmpty");
+  const dashboardBody = document.getElementById("dashboardBody");
+
+  if (!all.length) {
+    empty.hidden = false;
+    dashboard.hidden = true;
+    document.getElementById("metaLine").textContent = "Waiting for the live trade feed…";
+    return;
   }
+
+  empty.hidden = true;
+  dashboard.hidden = false;
+  document.getElementById("metaLine").textContent =
+    `${all.length} closed positions · viewing ${rangeLabel(state.range)} · click a P&L card to filter`;
+
+  if (!filtered.length) {
+    rangeEmpty.hidden = false;
+    dashboardBody.hidden = true;
+    document.getElementById("rangeEmptyText").textContent =
+      `No closed trades for ${rangeLabel(state.range)}. Total history still has ${all.length} trades.`;
+    destroyCharts();
+    return;
+  }
+
+  rangeEmpty.hidden = true;
+  dashboardBody.hidden = false;
+  renderCharts(filtered);
+  renderTable(filtered);
 }
 
 function saveTradesLocally(trades) {
@@ -373,6 +406,10 @@ document.getElementById("fileInput").addEventListener("change", onFile);
 document.getElementById("importBtn").addEventListener("click", () => {
   document.getElementById("fileInput").click();
 });
+document.getElementById("homeBtn").addEventListener("click", goHome);
+document.getElementById("showAllBtn").addEventListener("click", goHome);
+document.querySelector("h1").addEventListener("click", goHome);
+document.querySelector("h1").style.cursor = "pointer";
 document.querySelectorAll(".kpi").forEach((el) => {
   el.addEventListener("click", () => {
     state.range = el.dataset.range;
