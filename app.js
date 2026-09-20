@@ -9,6 +9,15 @@ const BE_LOSS_MAX = 10;
 const BE_PROFIT_MAX = 10;
 
 const STORAGE_KEY = "trade-tracker-trades-v1";
+const GITHUB_TRADES_URL =
+  "https://raw.githubusercontent.com/Andyyooi/trade-tracker/main/trades.json";
+
+function tradesFeedUrl() {
+  const host = window.location.hostname;
+  const local = host === "localhost" || host === "127.0.0.1";
+  const base = local ? "trades.json" : GITHUB_TRADES_URL;
+  return `${base}?t=${Date.now()}`;
+}
 
 const state = {
   trades: [],
@@ -352,14 +361,14 @@ document.querySelectorAll(".kpi").forEach((el) => {
 
 async function refreshLive() {
   try {
-    const res = await fetch(`trades.json?t=${Date.now()}`);
+    const res = await fetch(tradesFeedUrl(), { cache: "no-store" });
     if (!res.ok) return;
     const data = await res.json();
     if (Array.isArray(data?.trades) && data.trades.length) {
-      loadTrades(data.trades, { persist: false });
+      loadTrades(data.trades, { persist: true });
     }
   } catch {
-    /* On Vercel there is no local MT5 file — import or localStorage instead */
+    /* Local Mac / first Vercel load may not have a feed yet */
   }
 }
 

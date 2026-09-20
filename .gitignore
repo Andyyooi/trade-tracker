@@ -2,7 +2,6 @@
 _inspect/
 data/
 trades.js
-trades.json
 *.xlsx
 *.xls
 *.xml

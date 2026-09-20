@@ -50,10 +50,22 @@ On this Mac the file lands at:
 - **Win rate, profit factor, average win, average loss, and the win/loss slices** ignore break-even trades.
 - Change `BE_LOSS_MAX` and `BE_PROFIT_MAX` in `app.js` if your scratch band is different.
 
-Keep `trades.js`, `trades.json`, and `data/` off git — they are account history.
+Keep `trades.js` and Excel exports off git. `trades.json` **is** committed so Vercel / GitHub can serve your live snapshot.
 
-## Vercel / hosted deploy
+## Vercel / automated cloud dashboard
 
-The live MT5 feed and `trades.json` stay on your Mac, so a Vercel deploy starts empty. Use **Import MT5 report** once; the site saves that history in the browser (`localStorage`) so it comes back on refresh.
+Flow:
 
-Anyone with the Vercel URL can open the page, but they do not get your trades unless you import them on that device or you deliberately publish `trades.json`.
+1. MT5 expert writes closed trades on your Mac.
+2. `watch-export.rb` copies them into `trades.json` and **pushes to GitHub** when the data changes.
+3. The Vercel site loads `trades.json` from GitHub every few seconds (no Excel import needed).
+
+Leave this running on the Mac while you trade (Terminal.app or a Cursor terminal):
+
+```bash
+ruby ~/trade-tracker/watch-export.rb
+```
+
+MT5 must stay open with the expert attached. The site will not get new closes if the Mac is asleep or the watcher is stopped.
+
+Anyone with your Vercel URL can see this trade history. Set `PUSH_TO_GITHUB=0` if you want local sync only.
