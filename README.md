@@ -51,3 +51,9 @@ On this Mac the file lands at:
 - Change `BE_LOSS_MAX` and `BE_PROFIT_MAX` in `app.js` if your scratch band is different.
 
 Keep `trades.js`, `trades.json`, and `data/` off git — they are account history.
+
+## Vercel / hosted deploy
+
+The live MT5 feed and `trades.json` stay on your Mac, so a Vercel deploy starts empty. Use **Import MT5 report** once; the site saves that history in the browser (`localStorage`) so it comes back on refresh.
+
+Anyone with the Vercel URL can open the page, but they do not get your trades unless you import them on that device or you deliberately publish `trades.json`.

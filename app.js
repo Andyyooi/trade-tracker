@@ -8,6 +8,8 @@ const currency = new Intl.NumberFormat("en-US", {
 const BE_LOSS_MAX = 10;
 const BE_PROFIT_MAX = 10;
 
+const STORAGE_KEY = "trade-tracker-trades-v1";
+
 const state = {
   trades: [],
   range: "all",
@@ -284,7 +286,7 @@ function render() {
   setText("statAvgLoss", currency.format(-s.avgLoss), true);
   document.getElementById("metaLine").textContent = all.length
     ? `${all.length} closed positions · break-even is net −$${BE_LOSS_MAX.toFixed(2)} to +$${BE_PROFIT_MAX.toFixed(2)} · click a P&L card to filter`
-    : "Import an MT5 report or start the auto-export watcher";
+    : "Import an MT5 ReportHistory .xlsx to get started";
 
   document.querySelectorAll(".kpi").forEach((el) => {
     el.classList.toggle("active", el.dataset.range === state.range);
@@ -301,10 +303,28 @@ function render() {
   }
 }
 
-function loadTrades(trades) {
+function saveTradesLocally(trades) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ trades }));
+  } catch {
+    /* Safari private mode / quota — import still works for this session */
+  }
+}
+
+function readTradesLocally() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    return Array.isArray(saved?.trades) ? saved.trades : null;
+  } catch {
+    return null;
+  }
+}
+
+function loadTrades(trades, { persist = true } = {}) {
   const next = JSON.stringify(trades);
   if (next === JSON.stringify(state.trades)) return;
   state.trades = trades;
+  if (persist) saveTradesLocally(trades);
   render();
 }
 
@@ -313,7 +333,7 @@ async function onFile(event) {
   if (!file) return;
   try {
     const trades = await parseWorkbook(file);
-    loadTrades(trades);
+    loadTrades(trades, { persist: true });
   } catch (err) {
     alert(err.message || "Could not parse that spreadsheet.");
   }
@@ -335,16 +355,20 @@ async function refreshLive() {
     const res = await fetch(`trades.json?t=${Date.now()}`);
     if (!res.ok) return;
     const data = await res.json();
-    if (Array.isArray(data?.trades)) loadTrades(data.trades);
+    if (Array.isArray(data?.trades) && data.trades.length) {
+      loadTrades(data.trades, { persist: false });
+    }
   } catch {
-    /* Excel/sample load is enough until the watcher is running */
+    /* On Vercel there is no local MT5 file — import or localStorage instead */
   }
 }
 
 if (window.IMPORTED_TRADES?.trades?.length) {
-  loadTrades(window.IMPORTED_TRADES.trades);
+  loadTrades(window.IMPORTED_TRADES.trades, { persist: false });
 } else {
-  render();
+  const saved = readTradesLocally();
+  if (saved?.length) loadTrades(saved, { persist: false });
+  else render();
 }
 
 refreshLive();
