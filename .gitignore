@@ -1,0 +1,12 @@
+.DS_Store
+_inspect/
+data/
+trades.js
+trades.json
+*.xlsx
+*.xls
+*.xml
+*.htm
+*.html.xml
+macos/menubar.log
+macos/TradeTracker.app/

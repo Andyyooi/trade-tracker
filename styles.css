@@ -1,0 +1,202 @@
+:root {
+  --bg: #0c0e12;
+  --panel: #141820;
+  --panel-2: #1a2030;
+  --line: #252c3a;
+  --text: #e8edf5;
+  --muted: #8b95a8;
+  --green: #3dd68c;
+  --green-dim: rgba(61, 214, 140, 0.12);
+  --red: #ff5c7a;
+  --red-dim: rgba(255, 92, 122, 0.12);
+  --gold: #e0b15a;
+  --gold-dim: rgba(224, 177, 90, 0.12);
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  --radius: 16px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(224, 177, 90, 0.08), transparent 50%),
+    radial-gradient(900px 500px at 100% 0%, rgba(61, 214, 140, 0.05), transparent 45%),
+    var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+body { padding: 28px 24px 48px; }
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+  letter-spacing: -0.03em;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.btn:hover { border-color: #3a455c; }
+
+.btn-gold {
+  background: var(--gold);
+  color: #16130c;
+  border-color: var(--gold);
+  font-weight: 600;
+}
+
+.hidden-input { display: none; }
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.kpi {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.kpi.active { outline: 1px solid var(--gold); }
+
+.kpi .label {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.kpi .value {
+  margin-top: 8px;
+  font-size: 26px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.pos { color: var(--green); }
+.neg { color: var(--red); }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.stat .label { color: var(--muted); font-size: 12px; }
+.stat .value {
+  margin-top: 6px;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.chart-card, .table-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 18px 10px;
+  box-shadow: var(--shadow);
+}
+
+.chart-card h2, .table-card h2 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.chart-wrap { position: relative; height: 280px; }
+
+.table-wrap { overflow: auto; max-height: 420px; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+th { color: var(--muted); font-weight: 500; position: sticky; top: 0; background: var(--panel); }
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.tag.buy { background: var(--green-dim); color: var(--green); }
+.tag.sell { background: var(--red-dim); color: var(--red); }
+.tag.win { background: var(--green-dim); color: var(--green); }
+.tag.loss { background: var(--red-dim); color: var(--red); }
+.tag.be { background: var(--gold-dim); color: var(--gold); }
+
+.empty {
+  padding: 48px;
+  text-align: center;
+  color: var(--muted);
+}
+
+@media (max-width: 980px) {
+  .kpis, .stats, .charts { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 640px) {
+  .kpis, .stats, .charts { grid-template-columns: 1fr; }
+}

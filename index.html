@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trade Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>Trade Tracker</h1>
+      <p class="subtitle" id="metaLine">Import an MT5 ReportHistory .xlsx to get started</p>
+    </div>
+    <div class="actions">
+      <input id="fileInput" class="hidden-input" type="file" accept=".xlsx,.xls,.csv" />
+      <button class="btn btn-gold" id="importBtn" type="button">Import MT5 report</button>
+    </div>
+  </header>
+
+  <section id="empty" class="chart-card empty">
+    Drop in the Excel file from History → Report. Closed positions will show P&L, win rate, and charts.
+  </section>
+
+  <main id="dashboard" hidden>
+    <section class="kpis">
+      <article class="kpi" data-range="today">
+        <div class="label">Today</div>
+        <div class="value" id="pnlToday">$0.00</div>
+      </article>
+      <article class="kpi" data-range="week">
+        <div class="label">This week</div>
+        <div class="value" id="pnlWeek">$0.00</div>
+      </article>
+      <article class="kpi" data-range="month">
+        <div class="label">This month</div>
+        <div class="value" id="pnlMonth">$0.00</div>
+      </article>
+      <article class="kpi active" data-range="all">
+        <div class="label">All imported</div>
+        <div class="value" id="pnlAll">$0.00</div>
+      </article>
+    </section>
+
+    <section class="stats">
+      <article class="stat">
+        <div class="label">Trades</div>
+        <div class="value" id="statTrades">0</div>
+      </article>
+      <article class="stat">
+        <div class="label">Break-even</div>
+        <div class="value" id="statBE">0</div>
+      </article>
+      <article class="stat">
+        <div class="label">Win rate</div>
+        <div class="value" id="statWinRate">0%</div>
+      </article>
+      <article class="stat">
+        <div class="label">Profit factor</div>
+        <div class="value" id="statPF">0</div>
+      </article>
+      <article class="stat">
+        <div class="label">Avg win</div>
+        <div class="value" id="statAvgWin">$0.00</div>
+      </article>
+      <article class="stat">
+        <div class="label">Avg loss</div>
+        <div class="value" id="statAvgLoss">$0.00</div>
+      </article>
+    </section>
+
+    <section class="charts">
+      <article class="chart-card">
+        <h2>Equity curve</h2>
+        <div class="chart-wrap"><canvas id="equityChart"></canvas></div>
+      </article>
+      <article class="chart-card">
+        <h2>Wins / losses / break-even</h2>
+        <div class="chart-wrap"><canvas id="winChart"></canvas></div>
+      </article>
+    </section>
+
+    <section class="chart-card">
+      <h2>Daily net P&L</h2>
+      <div class="chart-wrap"><canvas id="dailyChart"></canvas></div>
+    </section>
+
+    <section class="table-card">
+      <h2>Closed positions</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Close time</th>
+              <th>Symbol</th>
+              <th>Side</th>
+              <th>Volume</th>
+              <th>Open</th>
+              <th>Close</th>
+              <th>Result</th>
+              <th>Net</th>
+            </tr>
+          </thead>
+          <tbody id="tradeBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="trades.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
