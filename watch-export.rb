@@ -14,28 +14,44 @@ SRC = ARGV[0] || File.expand_path(
 )
 DST_JSON = File.join(ROOT, "trades.json")
 DST_JS = File.join(ROOT, "trades.js")
-PUSH_TO_GITHUB = ENV.fetch("PUSH_TO_GITHUB", "1") != "0"
+# Public gist used by the Vercel site. Override with GIST_ID=... if needed.
+GIST_ID = ENV.fetch("GIST_ID", "f6ccd30b14d45a80a6b6cd0921b2b90b")
+PUSH_TO_GIST = ENV.fetch("PUSH_TO_GIST", "1") != "0"
+PUSH_TO_GITHUB = ENV.fetch("PUSH_TO_GITHUB", "0") != "0"
+GH = ENV.fetch("GH", File.expand_path("~/bin/gh"))
 
 puts "Watching #{SRC}"
 puts "Writing #{DST_JSON}"
-puts "GitHub push: #{PUSH_TO_GITHUB ? "on" : "off"}"
+puts "Gist push: #{PUSH_TO_GIST ? "on (#{GIST_ID})" : "off"}"
+puts "GitHub repo push: #{PUSH_TO_GITHUB ? "on" : "off"}"
 
-def push_trades_snapshot(count)
+def which_gh
+  return GH if File.executable?(GH)
+  found, = Open3.capture2("which", "gh")
+  found.strip.empty? ? "gh" : found.strip
+end
+
+def push_gist(count)
+  gh = which_gh
+  ok = system(gh, "gist", "edit", GIST_ID, "-f", "trades.json", DST_JSON)
+  if ok
+    puts "#{Time.now.strftime("%H:%M:%S")} pushed #{count} trades to gist"
+  else
+    puts "#{Time.now.strftime("%H:%M:%S")} gist push failed — run: gh auth login"
+  end
+end
+
+def push_repo(count)
   Dir.chdir(ROOT) do
     status, = Open3.capture2("git", "status", "--porcelain", "trades.json")
     return if status.strip.empty?
 
-    ok = system("git", "add", "trades.json")
-    return unless ok
-
-    message = "Update trades snapshot (#{count} closed)"
-    ok = system("git", "commit", "-m", message)
-    return unless ok
-
+    return unless system("git", "add", "trades.json")
+    return unless system("git", "commit", "-m", "Update trades snapshot (#{count} closed)")
     if system("git", "push", "origin", "HEAD")
-      puts "#{Time.now.strftime("%H:%M:%S")} pushed trades.json to GitHub"
+      puts "#{Time.now.strftime("%H:%M:%S")} pushed trades.json to GitHub repo"
     else
-      puts "#{Time.now.strftime("%H:%M:%S")} git push failed — check gh auth"
+      puts "#{Time.now.strftime("%H:%M:%S")} git push failed"
     end
   end
 end
@@ -52,7 +68,8 @@ loop do
       File.write(DST_JS, "window.IMPORTED_TRADES = #{pretty};\n")
       count = Array(data["trades"]).size
       puts "#{Time.now.strftime("%H:%M:%S")} synced #{count} closed trades"
-      push_trades_snapshot(count) if PUSH_TO_GITHUB
+      push_gist(count) if PUSH_TO_GIST
+      push_repo(count) if PUSH_TO_GITHUB
       last_digest = digest
     end
   end

@@ -11,12 +11,33 @@ const BE_PROFIT_MAX = 10;
 const STORAGE_KEY = "trade-tracker-trades-v1";
 const GITHUB_TRADES_URL =
   "https://raw.githubusercontent.com/Andyyooi/trade-tracker/main/trades.json";
+const GIST_TRADES_URL =
+  "https://gist.githubusercontent.com/Andyyooi/f6ccd30b14d45a80a6b6cd0921b2b90b/raw/trades.json";
 
-function tradesFeedUrl() {
+function localTradesUrl() {
+  return `trades.json?t=${Date.now()}`;
+}
+
+async function refreshLive() {
   const host = window.location.hostname;
   const local = host === "localhost" || host === "127.0.0.1";
-  const base = local ? "trades.json" : GITHUB_TRADES_URL;
-  return `${base}?t=${Date.now()}`;
+  const urls = local
+    ? [localTradesUrl(), GIST_TRADES_URL + `?t=${Date.now()}`]
+    : [GIST_TRADES_URL + `?t=${Date.now()}`, GITHUB_TRADES_URL + `?t=${Date.now()}`, localTradesUrl()];
+
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (Array.isArray(data?.trades) && data.trades.length) {
+        loadTrades(data.trades, { persist: true });
+        return;
+      }
+    } catch {
+      /* try next source */
+    }
+  }
 }
 
 const state = {
