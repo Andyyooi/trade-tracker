@@ -98,6 +98,9 @@ async function refreshLive() {
 const state = {
   trades: [],
   range: "all",
+  day: null,
+  calendarMonth: new Date(),
+  calendarTouched: false,
   charts: {},
 };
 
@@ -129,6 +132,24 @@ function startOfMonth(date) {
   return d;
 }
 
+function localDateKey(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function compactPnl(n) {
+  const abs = Math.abs(n);
+  const sign = n < 0 ? "-" : "";
+  if (abs >= 1000) {
+    const k = abs / 1000;
+    return `${sign}$${k.toFixed(k >= 10 ? 1 : 2)}K`;
+  }
+  if (abs >= 100) return `${sign}$${abs.toFixed(abs % 1 === 0 ? 0 : 1)}`;
+  return `${sign}$${abs.toFixed(2)}`;
+}
+
 function netOf(trade) {
   return Number(trade.net ?? (Number(trade.profit) + Number(trade.commission || 0) + Number(trade.swap || 0)));
 }
@@ -145,6 +166,14 @@ function inRange(trade, range, now = new Date()) {
   if (range === "week") return close >= startOfWeek(now);
   if (range === "month") return close >= startOfMonth(now);
   return true;
+}
+
+function matchesView(trade, now = new Date()) {
+  if (state.day) {
+    const close = parseMt5Time(trade.closeTime);
+    return Boolean(close && localDateKey(close) === state.day);
+  }
+  return inRange(trade, state.range, now);
 }
 
 function summarize(trades) {
@@ -176,7 +205,8 @@ function dailySeries(trades) {
   const map = new Map();
   for (const trade of [...trades].sort((a, b) => parseMt5Time(a.closeTime) - parseMt5Time(b.closeTime))) {
     const close = parseMt5Time(trade.closeTime);
-    const key = close.toISOString().slice(0, 10);
+    if (!close) continue;
+    const key = localDateKey(close);
     map.set(key, (map.get(key) || 0) + netOf(trade));
   }
   let running = 0;
@@ -184,6 +214,18 @@ function dailySeries(trades) {
     running += pnl;
     return { date, pnl, equity: running };
   });
+}
+
+function tradesByDay(trades) {
+  const map = new Map();
+  for (const trade of trades) {
+    const close = parseMt5Time(trade.closeTime);
+    if (!close) continue;
+    const key = localDateKey(close);
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(trade);
+  }
+  return map;
 }
 
 function findHeaderRow(rows) {
@@ -256,7 +298,6 @@ function renderCharts(trades) {
   const summary = summarize(trades);
   const lineCtx = document.getElementById("equityChart");
   const pieCtx = document.getElementById("winChart");
-  const barCtx = document.getElementById("dailyChart");
 
   state.charts.equity = new Chart(lineCtx, {
     type: "line",
@@ -293,19 +334,70 @@ function renderCharts(trades) {
       cutout: "62%",
     },
   });
+}
 
-  state.charts.daily = new Chart(barCtx, {
-    type: "bar",
-    data: {
-      labels: series.map((s) => s.date.slice(5)),
-      datasets: [{
-        label: "Daily net P&L",
-        data: series.map((s) => s.pnl),
-        backgroundColor: series.map((s) => (s.pnl >= 0 ? "#3dd68c" : "#ff5c7a")),
-      }],
-    },
-    options: chartOptions("USD"),
-  });
+function renderCalendar(trades) {
+  state.calendarMonth = startOfMonth(state.calendarMonth);
+  const monthDate = state.calendarMonth;
+  const year = monthDate.getFullYear();
+  const month = monthDate.getMonth();
+  const title = monthDate.toLocaleString("en-US", { month: "long", year: "numeric" });
+  document.getElementById("calTitle").textContent = title;
+
+  const byDay = tradesByDay(trades);
+  const firstWeekday = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const todayKey = localDateKey(new Date());
+  const cells = [];
+
+  for (let i = 0; i < firstWeekday; i += 1) {
+    cells.push('<div class="cal-cell empty"></div>');
+  }
+
+  let monthTrades = [];
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const key = localDateKey(new Date(year, month, day));
+    const dayTrades = byDay.get(key) || [];
+    monthTrades = monthTrades.concat(dayTrades);
+    const summary = summarize(dayTrades);
+    const isToday = key === todayKey;
+    const selected = key === state.day;
+    const has = dayTrades.length > 0;
+    const tone = !has ? "" : summary.pnl > 0 ? "win" : summary.pnl < 0 ? "loss" : "flat";
+    const classes = [
+      "cal-cell",
+      tone,
+      has ? "has-trades" : "",
+      isToday ? "today" : "",
+      selected ? "selected" : "",
+    ].filter(Boolean).join(" ");
+    const body = has
+      ? `<div class="cal-pnl ${summary.pnl >= 0 ? "pos" : "neg"}">${compactPnl(summary.pnl)}</div>
+         <div class="cal-meta">${summary.count} trade${summary.count === 1 ? "" : "s"}<br>${summary.winRate.toFixed(1)}%</div>
+         <span class="cal-dot ${summary.pnl >= 0 ? "pos" : "neg"}"></span>`
+      : "";
+    cells.push(
+      `<button type="button" class="${classes}" data-day="${key}" ${has ? "" : "disabled"}>
+        <div class="cal-day">${day}</div>
+        ${body}
+      </button>`
+    );
+  }
+
+  while (cells.length % 7 !== 0) {
+    cells.push('<div class="cal-cell empty"></div>');
+  }
+
+  document.getElementById("calGrid").innerHTML = cells.join("");
+
+  const monthSummary = summarize(monthTrades);
+  const monthLabel = startOfMonth(new Date()).getTime() === monthDate.getTime()
+    ? "This month"
+    : title;
+  document.getElementById("calMonthStats").innerHTML =
+    `<div>${monthLabel}</div>
+     <div><strong class="${monthSummary.pnl >= 0 ? "pos" : "neg"}">${currency.format(monthSummary.pnl)}</strong>
+     · ${monthSummary.count} trades · ${monthSummary.winRate.toFixed(1)}% win</div>`;
 }
 
 function chartOptions() {
@@ -356,13 +448,23 @@ function rangeLabel(range) {
 
 function goHome() {
   state.range = "all";
+  state.day = null;
   render();
+}
+
+function shiftCalendar(delta) {
+  const next = new Date(startOfMonth(state.calendarMonth));
+  next.setMonth(next.getMonth() + delta);
+  state.calendarMonth = startOfMonth(next);
+  state.calendarTouched = true;
+  renderCalendar(state.trades);
 }
 
 function render() {
   const now = new Date();
   const all = state.trades;
-  const filtered = all.filter((t) => inRange(t, state.range, now));
+  const filtered = all.filter((t) => matchesView(t, now));
+  const viewingDay = Boolean(state.day);
   const byRange = {
     today: summarize(all.filter((t) => inRange(t, "today", now))),
     week: summarize(all.filter((t) => inRange(t, "week", now))),
@@ -383,10 +485,10 @@ function render() {
   setText("statAvgLoss", currency.format(-s.avgLoss), true);
 
   const homeBtn = document.getElementById("homeBtn");
-  homeBtn.hidden = !all.length || state.range === "all";
+  homeBtn.hidden = !all.length || (state.range === "all" && !viewingDay);
 
   document.querySelectorAll(".kpi").forEach((el) => {
-    el.classList.toggle("active", el.dataset.range === state.range);
+    el.classList.toggle("active", !viewingDay && el.dataset.range === state.range);
   });
 
   const empty = document.getElementById("empty");
@@ -403,14 +505,24 @@ function render() {
 
   empty.hidden = true;
   dashboard.hidden = false;
+  const viewLabel = viewingDay
+    ? new Date(`${state.day}T00:00:00`).toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    })
+    : rangeLabel(state.range);
   document.getElementById("metaLine").textContent =
-    `${all.length} closed positions · viewing ${rangeLabel(state.range)} · click a P&L card to filter`;
+    `${all.length} closed positions · viewing ${viewLabel} · click a P&L card or a calendar day to filter`;
+
+  renderCalendar(all);
 
   if (!filtered.length) {
     rangeEmpty.hidden = false;
     dashboardBody.hidden = true;
     document.getElementById("rangeEmptyText").textContent =
-      `No closed trades for ${rangeLabel(state.range)}. Total history still has ${all.length} trades.`;
+      `No closed trades for ${viewLabel}. Total history still has ${all.length} trades.`;
     destroyCharts();
     return;
   }
@@ -438,10 +550,25 @@ function readTradesLocally() {
   }
 }
 
+function preferredCalendarMonth(trades) {
+  const thisMonth = startOfMonth(new Date());
+  let latest = null;
+  let hasThisMonth = false;
+  for (const trade of trades) {
+    const close = parseMt5Time(trade.closeTime);
+    if (!close) continue;
+    if (close >= thisMonth) hasThisMonth = true;
+    if (!latest || close > latest) latest = close;
+  }
+  if (hasThisMonth || !latest) return thisMonth;
+  return startOfMonth(latest);
+}
+
 function loadTrades(trades, { persist = true } = {}) {
   const next = JSON.stringify(trades);
   if (next === JSON.stringify(state.trades)) return;
   state.trades = trades;
+  if (!state.calendarTouched) state.calendarMonth = preferredCalendarMonth(trades);
   if (persist) saveTradesLocally(trades);
   render();
 }
@@ -468,8 +595,28 @@ document.querySelector("h1").style.cursor = "pointer";
 document.querySelectorAll(".kpi").forEach((el) => {
   el.addEventListener("click", () => {
     state.range = el.dataset.range;
+    state.day = null;
+    if (el.dataset.range === "month" || el.dataset.range === "today" || el.dataset.range === "week") {
+      state.calendarMonth = startOfMonth(new Date());
+      state.calendarTouched = true;
+    }
     render();
   });
+});
+document.getElementById("calPrev").addEventListener("click", () => shiftCalendar(-1));
+document.getElementById("calNext").addEventListener("click", () => shiftCalendar(1));
+document.getElementById("calThisMonth").addEventListener("click", () => {
+  state.calendarMonth = startOfMonth(new Date());
+  state.calendarTouched = true;
+  state.day = null;
+  state.range = "month";
+  render();
+});
+document.getElementById("calGrid").addEventListener("click", (event) => {
+  const cell = event.target.closest("[data-day]");
+  if (!cell || cell.disabled || !cell.classList.contains("has-trades")) return;
+  state.day = cell.dataset.day;
+  render();
 });
 
 if (window.IMPORTED_TRADES?.trades?.length) {

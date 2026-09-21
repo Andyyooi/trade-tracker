@@ -184,16 +184,22 @@ void ExportClosedTrades()
       return;
      }
 
-   string json = "{\"currency\":\"USD\",\"source\":\"MT5 auto-export\",\"trades\":[";
+   string json = "{";
+   json += "\"currency\":\"USD\",";
+   json += "\"source\":\"MT5 auto-export\",";
+   json += "\"exportedAt\":" + JsonString(TimeToString(TimeCurrent(), TIME_DATE | TIME_SECONDS)) + ",";
+   json += "\"trades\":[";
    json += body;
    json += "]}";
    FileWriteString(handle, json);
    FileClose(handle);
+   Print("Trade Tracker: wrote ", count, " closed trades to Common\\\\Files\\\\", InpFileName);
   }
 
 int OnInit()
   {
    EventSetTimer(MathMax(InpRefreshSec, 2));
+   Print("Trade Tracker: started — refresh every ", MathMax(InpRefreshSec, 2), "s");
    ExportClosedTrades();
    return INIT_SUCCEEDED;
   }

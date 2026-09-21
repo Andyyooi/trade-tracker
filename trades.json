@@ -8561,6 +8561,54 @@
       "swap": 0.0,
       "profit": -65.8,
       "net": -65.8
+    },
+    {
+      "openTime": "2026.09.21 12:34:18",
+      "closeTime": "2026.09.21 17:02:34",
+      "ticket": "1025247370",
+      "symbol": "GOLD",
+      "type": "buy",
+      "volume": 0.1,
+      "openPrice": 4342.52,
+      "sl": 0.0,
+      "tp": 0.0,
+      "closePrice": 4337.88,
+      "commission": 0.0,
+      "swap": 0.0,
+      "profit": -46.4,
+      "net": -46.4
+    },
+    {
+      "openTime": "2026.09.21 17:09:49",
+      "closeTime": "2026.09.21 17:13:26",
+      "ticket": "1025404342",
+      "symbol": "GOLD",
+      "type": "sell",
+      "volume": 0.1,
+      "openPrice": 4335.79,
+      "sl": 0.0,
+      "tp": 0.0,
+      "closePrice": 4340.7,
+      "commission": 0.0,
+      "swap": 0.0,
+      "profit": -49.1,
+      "net": -49.1
+    },
+    {
+      "openTime": "2026.09.21 17:14:23",
+      "closeTime": "2026.09.21 18:03:02",
+      "ticket": "1025407703",
+      "symbol": "GOLD",
+      "type": "sell",
+      "volume": 0.1,
+      "openPrice": 4340.27,
+      "sl": 0.0,
+      "tp": 4313.92,
+      "closePrice": 4345.29,
+      "commission": 0.0,
+      "swap": 0.0,
+      "profit": -50.2,
+      "net": -50.2
     }
   ]
 }

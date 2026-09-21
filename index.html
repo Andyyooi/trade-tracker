@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260921d" />
+  <link rel="stylesheet" href="styles.css?v=20260922b" />
 </head>
 <body>
   <header class="top">
@@ -44,6 +44,23 @@
         <div class="label">All imported</div>
         <div class="value" id="pnlAll">$0.00</div>
       </article>
+    </section>
+
+    <section class="chart-card calendar-card">
+      <div class="calendar-head">
+        <div class="cal-nav">
+          <button class="btn cal-btn" id="calPrev" type="button" aria-label="Previous month">‹</button>
+          <h2 id="calTitle">June 2026</h2>
+          <button class="btn cal-btn" id="calNext" type="button" aria-label="Next month">›</button>
+          <button class="btn" id="calThisMonth" type="button">This month</button>
+        </div>
+        <div class="cal-month-stats" id="calMonthStats"></div>
+      </div>
+      <div class="cal-weekdays">
+        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+        <span>Thu</span><span>Fri</span><span>Sat</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
     </section>
 
     <section id="rangeEmpty" class="chart-card empty" hidden>
@@ -90,11 +107,6 @@
       </article>
     </section>
 
-    <section class="chart-card">
-      <h2>Daily net P&L</h2>
-      <div class="chart-wrap"><canvas id="dailyChart"></canvas></div>
-    </section>
-
     <section class="table-card">
       <h2>Closed positions</h2>
       <div class="table-wrap">
@@ -120,6 +132,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="app.js?v=20260921d"></script>
+  <script src="app.js?v=20260922a"></script>
 </body>
 </html>
