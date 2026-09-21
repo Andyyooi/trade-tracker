@@ -201,19 +201,28 @@ function summarize(trades) {
   };
 }
 
-function dailySeries(trades) {
-  const map = new Map();
-  for (const trade of [...trades].sort((a, b) => parseMt5Time(a.closeTime) - parseMt5Time(b.closeTime))) {
-    const close = parseMt5Time(trade.closeTime);
-    if (!close) continue;
-    const key = localDateKey(close);
-    map.set(key, (map.get(key) || 0) + netOf(trade));
-  }
+function equitySeries(trades) {
+  const sorted = [...trades]
+    .map((trade) => ({ trade, close: parseMt5Time(trade.closeTime) }))
+    .filter((item) => item.close)
+    .sort((a, b) => a.close - b.close);
+  if (!sorted.length) return [];
+
+  const firstDay = localDateKey(sorted[0].close);
+  const lastDay = localDateKey(sorted[sorted.length - 1].close);
+  const sameDay = firstDay === lastDay;
+  const points = [{ label: "Start", equity: 0 }];
   let running = 0;
-  return [...map.entries()].map(([date, pnl]) => {
-    running += pnl;
-    return { date, pnl, equity: running };
-  });
+  for (const item of sorted) {
+    running += netOf(item.trade);
+    points.push({
+      label: sameDay
+        ? item.close.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false })
+        : localDateKey(item.close).slice(5),
+      equity: Number(running.toFixed(2)),
+    });
+  }
+  return points;
 }
 
 function tradesByDay(trades) {
@@ -294,27 +303,31 @@ function destroyCharts() {
 
 function renderCharts(trades) {
   destroyCharts();
-  const series = dailySeries(trades);
+  const series = equitySeries(trades);
   const summary = summarize(trades);
   const lineCtx = document.getElementById("equityChart");
   const pieCtx = document.getElementById("winChart");
+  const sparse = series.length <= 8;
 
   state.charts.equity = new Chart(lineCtx, {
     type: "line",
     data: {
-      labels: series.map((s) => s.date.slice(5)),
+      labels: series.map((s) => s.label),
       datasets: [{
         label: "Cumulative net P&L",
         data: series.map((s) => s.equity),
         borderColor: "#e0b15a",
         backgroundColor: "rgba(224, 177, 90, 0.12)",
         fill: true,
-        tension: 0.25,
-        pointRadius: 0,
+        tension: 0.2,
+        pointRadius: sparse ? 4 : 0,
+        pointHoverRadius: 5,
+        pointBackgroundColor: "#e0b15a",
         borderWidth: 2,
+        spanGaps: true,
       }],
     },
-    options: chartOptions("USD"),
+    options: chartOptions(),
   });
 
   state.charts.win = new Chart(pieCtx, {
@@ -325,15 +338,86 @@ function renderCharts(trades) {
         data: [summary.wins, summary.losses, summary.breakEven],
         backgroundColor: ["#3dd68c", "#ff5c7a", "#e0b15a"],
         borderWidth: 0,
+        hoverOffset: 4,
       }],
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: "#8b95a8" } },
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const value = ctx.raw || 0;
+              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+              const pct = total ? ((value / total) * 100).toFixed(1) : "0.0";
+              return ` ${value} (${pct}%)`;
+            },
+          },
+        },
       },
-      cutout: "62%",
+      cutout: "68%",
     },
   });
+
+  renderWinLegend(summary);
+  requestAnimationFrame(() => {
+    state.charts.equity?.resize();
+    state.charts.win?.resize();
+  });
+}
+
+function renderWinLegend(summary) {
+  const total = summary.wins + summary.losses + summary.breakEven;
+  const rows = [
+    { label: "Wins", count: summary.wins, color: "#3dd68c" },
+    { label: "Losses", count: summary.losses, color: "#ff5c7a" },
+    { label: "Break-even", count: summary.breakEven, color: "#e0b15a" },
+  ];
+  document.getElementById("winLegend").innerHTML = rows.map((row) => {
+    const pct = total ? (row.count / total) * 100 : 0;
+    return `<li>
+      <span class="pie-swatch" style="background:${row.color}"></span>
+      <span class="pie-name">${row.label}</span>
+      <span class="pie-count">${row.count}</span>
+      <span class="pie-pct">${pct.toFixed(1)}%</span>
+    </li>`;
+  }).join("") + `<li class="pie-rate">Win rate <strong>${summary.winRate.toFixed(1)}%</strong></li>`;
+}
+
+function chartOptions() {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: "index", intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => ` ${currency.format(ctx.parsed.y)}`,
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: "#8b95a8",
+          maxRotation: 0,
+          autoSkip: true,
+          maxTicksLimit: 8,
+        },
+        grid: { color: "rgba(255,255,255,0.04)" },
+      },
+      y: {
+        ticks: {
+          color: "#8b95a8",
+          callback: (value) => compactPnl(value),
+        },
+        grid: { color: "rgba(255,255,255,0.06)" },
+      },
+    },
+  };
 }
 
 function renderCalendar(trades) {
@@ -398,26 +482,6 @@ function renderCalendar(trades) {
     `<div>${monthLabel}</div>
      <div><strong class="${monthSummary.pnl >= 0 ? "pos" : "neg"}">${currency.format(monthSummary.pnl)}</strong>
      · ${monthSummary.count} trades · ${monthSummary.winRate.toFixed(1)}% win</div>`;
-}
-
-function chartOptions() {
-  return {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      x: {
-        ticks: { color: "#8b95a8", maxRotation: 0 },
-        grid: { color: "rgba(255,255,255,0.04)" },
-      },
-      y: {
-        ticks: { color: "#8b95a8" },
-        grid: { color: "rgba(255,255,255,0.06)" },
-      },
-    },
-  };
 }
 
 function renderTable(trades) {

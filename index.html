@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260922b" />
+  <link rel="stylesheet" href="styles.css?v=20260922c" />
 </head>
 <body>
   <header class="top">
@@ -101,9 +101,12 @@
         <h2>Equity curve</h2>
         <div class="chart-wrap"><canvas id="equityChart"></canvas></div>
       </article>
-      <article class="chart-card">
+      <article class="chart-card pie-card">
         <h2>Wins / losses / break-even</h2>
-        <div class="chart-wrap"><canvas id="winChart"></canvas></div>
+        <div class="pie-layout">
+          <div class="chart-wrap pie-wrap"><canvas id="winChart"></canvas></div>
+          <ul class="pie-legend" id="winLegend"></ul>
+        </div>
       </article>
     </section>
 
@@ -132,6 +135,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="app.js?v=20260922a"></script>
+  <script src="app.js?v=20260922c"></script>
 </body>
 </html>
