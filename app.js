@@ -21,16 +21,18 @@ function localTradesUrl() {
 async function refreshLive() {
   const host = window.location.hostname;
   const local = host === "localhost" || host === "127.0.0.1";
-  // Prefer same-origin trades.json on Vercel (deployed from the repo), then gist/raw.
+  // Hosted: gist first (live watcher updates). Same-origin trades.json is only a
+  // deploy snapshot and goes stale until the next git push.
   const urls = local
     ? [localTradesUrl(), `${GIST_TRADES_URL}?t=${Date.now()}`]
     : [
-      localTradesUrl(),
       `${GIST_TRADES_URL}?t=${Date.now()}`,
       `${GITHUB_TRADES_URL}?t=${Date.now()}`,
+      localTradesUrl(),
     ];
 
   let lastError = null;
+  let best = null;
   for (const url of urls) {
     try {
       const res = await fetch(url, { cache: "no-store" });
@@ -38,26 +40,32 @@ async function refreshLive() {
         lastError = `${url} → ${res.status}`;
         continue;
       }
-      const text = await res.text();
-      const data = JSON.parse(text);
-      if (Array.isArray(data?.trades) && data.trades.length) {
-        loadTrades(data.trades, { persist: true });
-        const meta = document.getElementById("metaLine");
-        if (meta && !state.trades.length) {
-          /* render() will overwrite */
-        }
+      const data = JSON.parse(await res.text());
+      if (!Array.isArray(data?.trades) || !data.trades.length) {
+        lastError = `${url} → empty trades`;
+        continue;
+      }
+      if (!best || data.trades.length > best.trades.length) {
+        best = data;
+      }
+      // Gist is authoritative when present — stop after first successful gist/raw hit
+      if (url.includes("gist.githubusercontent.com") || url.includes("raw.githubusercontent.com")) {
+        loadTrades(best.trades, { persist: true });
         return;
       }
-      lastError = `${url} → empty trades`;
     } catch (err) {
       lastError = `${url} → ${err.message || err}`;
     }
+  }
+  if (best?.trades?.length) {
+    loadTrades(best.trades, { persist: true });
+    return;
   }
   if (!state.trades.length && lastError) {
     const empty = document.getElementById("empty");
     if (empty) {
       empty.hidden = false;
-      empty.innerHTML = `Could not load trade feed.<br><small>${lastError}</small><br>Check that <code>trades.json</code> is in the GitHub repo and Vercel has redeployed.`;
+      empty.innerHTML = `Could not load trade feed.<br><small>${lastError}</small>`;
     }
   }
 }
