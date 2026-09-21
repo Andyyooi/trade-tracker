@@ -11,18 +11,46 @@ const BE_PROFIT_MAX = 10;
 const STORAGE_KEY = "trade-tracker-trades-v1";
 const GITHUB_TRADES_URL =
   "https://raw.githubusercontent.com/Andyyooi/trade-tracker/main/trades.json";
+const GIST_ID = "f6ccd30b14d45a80a6b6cd0921b2b90b";
+const GIST_API_URL = `https://api.github.com/gists/${GIST_ID}`;
 const GIST_TRADES_URL =
-  "https://gist.githubusercontent.com/Andyyooi/f6ccd30b14d45a80a6b6cd0921b2b90b/raw/trades.json";
+  `https://gist.githubusercontent.com/Andyyooi/${GIST_ID}/raw/trades.json`;
 
 function localTradesUrl() {
   return `trades.json?t=${Date.now()}`;
 }
 
+async function loadFromGistApi() {
+  const res = await fetch(`${GIST_API_URL}?t=${Date.now()}`, {
+    cache: "no-store",
+    headers: { Accept: "application/vnd.github+json" },
+  });
+  if (!res.ok) throw new Error(`gist api → ${res.status}`);
+  const gist = await res.json();
+  const file = gist.files?.["trades.json"];
+  if (!file?.content) throw new Error("gist api → missing trades.json");
+  const data = JSON.parse(file.content);
+  if (!Array.isArray(data?.trades) || !data.trades.length) {
+    throw new Error("gist api → empty trades");
+  }
+  return data;
+}
+
 async function refreshLive() {
   const host = window.location.hostname;
   const local = host === "localhost" || host === "127.0.0.1";
-  // Hosted: gist first (live watcher updates). Same-origin trades.json is only a
-  // deploy snapshot and goes stale until the next git push.
+
+  // Gist API first on the hosted site (avoids CDN caching the raw file).
+  if (!local) {
+    try {
+      const data = await loadFromGistApi();
+      loadTrades(data.trades, { persist: true });
+      return;
+    } catch (err) {
+      console.warn("Gist API feed failed, trying fallbacks", err);
+    }
+  }
+
   const urls = local
     ? [localTradesUrl(), `${GIST_TRADES_URL}?t=${Date.now()}`]
     : [
@@ -45,10 +73,7 @@ async function refreshLive() {
         lastError = `${url} → empty trades`;
         continue;
       }
-      if (!best || data.trades.length > best.trades.length) {
-        best = data;
-      }
-      // Gist is authoritative when present — stop after first successful gist/raw hit
+      if (!best || data.trades.length > best.trades.length) best = data;
       if (url.includes("gist.githubusercontent.com") || url.includes("raw.githubusercontent.com")) {
         loadTrades(best.trades, { persist: true });
         return;

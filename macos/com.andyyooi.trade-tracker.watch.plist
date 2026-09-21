@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.andyyooi.trade-tracker.watch</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/ruby</string>
+    <string>/Users/andyyooi/trade-tracker/watch-export.rb</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/andyyooi/trade-tracker</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/Users/andyyooi/trade-tracker/macos/watch-export.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/andyyooi/trade-tracker/macos/watch-export.log</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/Users/andyyooi/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <key>HOME</key>
+    <string>/Users/andyyooi</string>
+    <key>PUSH_TO_GIST</key>
+    <string>1</string>
+  </dict>
+</dict>
+</plist>

@@ -8545,6 +8545,22 @@
       "swap": -8.48,
       "profit": 19.7,
       "net": 11.22
+    },
+    {
+      "openTime": "2026.09.21 10:44:32",
+      "closeTime": "2026.09.21 12:32:26",
+      "ticket": "1025201486",
+      "symbol": "GOLD",
+      "type": "buy",
+      "volume": 0.1,
+      "openPrice": 4347.2,
+      "sl": 0.0,
+      "tp": 0.0,
+      "closePrice": 4340.62,
+      "commission": 0.0,
+      "swap": 0.0,
+      "profit": -65.8,
+      "net": -65.8
     }
   ]
 }

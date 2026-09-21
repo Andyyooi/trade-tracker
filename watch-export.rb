@@ -5,6 +5,7 @@ require "json"
 require "digest"
 require "fileutils"
 require "open3"
+require "tmpdir"
 
 $stdout.sync = true
 
@@ -14,7 +15,6 @@ SRC = ARGV[0] || File.expand_path(
 )
 DST_JSON = File.join(ROOT, "trades.json")
 DST_JS = File.join(ROOT, "trades.js")
-# Public gist used by the Vercel site. Override with GIST_ID=... if needed.
 GIST_ID = ENV.fetch("GIST_ID", "f6ccd30b14d45a80a6b6cd0921b2b90b")
 PUSH_TO_GIST = ENV.fetch("PUSH_TO_GIST", "1") != "0"
 PUSH_TO_GITHUB = ENV.fetch("PUSH_TO_GITHUB", "0") != "0"
@@ -33,11 +33,21 @@ end
 
 def push_gist(count)
   gh = which_gh
-  ok = system(gh, "gist", "edit", GIST_ID, "-f", "trades.json", DST_JSON)
-  if ok
+  content = File.read(DST_JSON)
+  payload_path = File.join(Dir.tmpdir, "trade-tracker-gist.json")
+  File.write(payload_path, JSON.generate(
+    "files" => {
+      "trades.json" => { "content" => content }
+    }
+  ))
+  out, err, status = Open3.capture3(
+    gh, "api", "-X", "PATCH", "/gists/#{GIST_ID}",
+    "--input", payload_path
+  )
+  if status.success?
     puts "#{Time.now.strftime("%H:%M:%S")} pushed #{count} trades to gist"
   else
-    puts "#{Time.now.strftime("%H:%M:%S")} gist push failed — run: gh auth login"
+    puts "#{Time.now.strftime("%H:%M:%S")} gist push failed: #{err.empty? ? out : err}"
   end
 end
 
