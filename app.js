@@ -20,6 +20,13 @@ function localTradesUrl() {
   return `trades.json?t=${Date.now()}`;
 }
 
+function parseTradeFeed(data) {
+  if (!data || !Array.isArray(data.trades)) {
+    throw new Error("missing trades array");
+  }
+  return data;
+}
+
 async function loadFromGistApi() {
   const res = await fetch(`${GIST_API_URL}?t=${Date.now()}`, {
     cache: "no-store",
@@ -29,11 +36,7 @@ async function loadFromGistApi() {
   const gist = await res.json();
   const file = gist.files?.["trades.json"];
   if (!file?.content) throw new Error("gist api → missing trades.json");
-  const data = JSON.parse(file.content);
-  if (!Array.isArray(data?.trades) || !data.trades.length) {
-    throw new Error("gist api → empty trades");
-  }
-  return data;
+  return parseTradeFeed(JSON.parse(file.content));
 }
 
 async function refreshLive() {
@@ -44,6 +47,7 @@ async function refreshLive() {
   if (!local) {
     try {
       const data = await loadFromGistApi();
+      // Empty is a valid reset after switching MT5 accounts.
       loadTrades(data.trades, { persist: true });
       return;
     } catch (err) {
@@ -60,7 +64,6 @@ async function refreshLive() {
     ];
 
   let lastError = null;
-  let best = null;
   for (const url of urls) {
     try {
       const res = await fetch(url, { cache: "no-store" });
@@ -68,23 +71,12 @@ async function refreshLive() {
         lastError = `${url} → ${res.status}`;
         continue;
       }
-      const data = JSON.parse(await res.text());
-      if (!Array.isArray(data?.trades) || !data.trades.length) {
-        lastError = `${url} → empty trades`;
-        continue;
-      }
-      if (!best || data.trades.length > best.trades.length) best = data;
-      if (url.includes("gist.githubusercontent.com") || url.includes("raw.githubusercontent.com")) {
-        loadTrades(best.trades, { persist: true });
-        return;
-      }
+      const data = parseTradeFeed(JSON.parse(await res.text()));
+      loadTrades(data.trades, { persist: true });
+      return;
     } catch (err) {
       lastError = `${url} → ${err.message || err}`;
     }
-  }
-  if (best?.trades?.length) {
-    loadTrades(best.trades, { persist: true });
-    return;
   }
   if (!state.trades.length && lastError) {
     const empty = document.getElementById("empty");
@@ -599,6 +591,10 @@ function render() {
 
 function saveTradesLocally(trades) {
   try {
+    if (!trades.length) {
+      localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ trades }));
   } catch {
     /* Safari private mode / quota — import still works for this session */
