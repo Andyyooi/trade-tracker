@@ -68,70 +68,12 @@ on refreshDisplay_(sender)
 end refreshDisplay_
 
 on computeStats()
-	set payload to my loadTrades()
-	set trades to payload's objectForKey:"trades"
-	if trades is missing value then error "No trades array"
-	
-	set now to current application's NSDate's |date|()
-	set cal to current application's NSCalendar's currentCalendar()
-	set startToday to cal's startOfDayForDate:now
-	
-	set weekdayNum to (cal's component:(current application's NSCalendarUnitWeekday) fromDate:now) as integer
-	set weekOffset to weekdayNum - 2
-	if weekdayNum = 1 then set weekOffset to 6
-	set weekComp to current application's NSDateComponents's alloc()'s init()
-	weekComp's setDay:(-weekOffset)
-	set startWeek to cal's dateByAddingComponents:weekComp toDate:startToday options:0
-	
-	set monthUnits to ((current application's NSCalendarUnitYear) as integer) + ((current application's NSCalendarUnitMonth) as integer)
-	set monthComps to cal's components:monthUnits fromDate:now
-	monthComps's setDay:1
-	set startMonth to cal's dateFromComponents:monthComps
-	
-	set fmt to current application's NSDateFormatter's alloc()'s init()
-	fmt's setLocale:(current application's NSLocale's localeWithLocaleIdentifier:"en_US_POSIX")
-	fmt's setDateFormat:"yyyy.MM.dd HH:mm:ss"
-	
-	set todayPnl to 0.0
-	set weekPnl to 0.0
-	set monthPnl to 0.0
-	set allPnl to 0.0
-	set winCount to 0
-	set lossCount to 0
-	set beCount to 0
-	set tradeCount to trades's |count|() as integer
-	
-	repeat with i from 0 to (tradeCount - 1)
-		set trade to trades's objectAtIndex:i
-		set net to (trade's objectForKey:"net") as real
-		set closeText to (trade's objectForKey:"closeTime") as text
-		set closeDate to fmt's dateFromString:closeText
-		set allPnl to allPnl + net
-		if closeDate is not missing value then
-			if (closeDate's compare:startToday) is not (current application's NSOrderedAscending) then set todayPnl to todayPnl + net
-			if (closeDate's compare:startWeek) is not (current application's NSOrderedAscending) then set weekPnl to weekPnl + net
-			if (closeDate's compare:startMonth) is not (current application's NSOrderedAscending) then set monthPnl to monthPnl + net
-		end if
-		if net ≥ -10.0 and net ≤ 10.0 then
-			set beCount to beCount + 1
-		else if net > 0 then
-			set winCount to winCount + 1
-		else
-			set lossCount to lossCount + 1
-		end if
-	end repeat
-	
-	set decided to winCount + lossCount
-	set winRate to 0.0
-	if decided > 0 then set winRate to ((winCount as real) / decided) * 100
-	
-	set resultDict to current application's NSMutableDictionary's dictionary()
-	resultDict's setObject:todayPnl forKey:"todayPnl"
-	resultDict's setObject:weekPnl forKey:"weekPnl"
-	resultDict's setObject:monthPnl forKey:"monthPnl"
-	resultDict's setObject:allPnl forKey:"allPnl"
-	resultDict's setObject:("Win rate  " & my formatRate(winRate) & "%  ·  " & tradeCount & " trades  ·  " & beCount & " BE") forKey:"statsLabel"
-	return resultDict
+	set raw to do shell script "/usr/bin/ruby " & quoted form of "/Users/andyyooi/trade-tracker/macos/menu_stats.rb"
+	set nsRaw to current application's NSString's stringWithString:raw
+	set jsonData to nsRaw's dataUsingEncoding:(current application's NSUTF8StringEncoding)
+	set payload to current application's NSJSONSerialization's JSONObjectWithData:jsonData options:0 |error|:(missing value)
+	if payload is missing value then error "Could not read trade stats"
+	return payload
 end computeStats
 
 on loadTrades()

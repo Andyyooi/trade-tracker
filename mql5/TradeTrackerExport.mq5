@@ -188,6 +188,7 @@ void ExportClosedTrades()
    json += "\"currency\":\"USD\",";
    json += "\"source\":\"MT5 auto-export\",";
    json += "\"exportedAt\":" + JsonString(TimeToString(TimeCurrent(), TIME_DATE | TIME_SECONDS)) + ",";
+   json += "\"serverUtcOffsetMinutes\":" + IntegerToString((int)((TimeCurrent() - TimeGMT()) / 60)) + ",";
    json += "\"trades\":[";
    json += body;
    json += "]}";
