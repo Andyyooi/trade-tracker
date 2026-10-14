@@ -96,6 +96,7 @@ const state = {
   ledger: [],
   ledgerKey: "",
   cashNets: new Map(),
+  cashAdjusted: false,
   charts: {},
 };
 
@@ -153,57 +154,68 @@ function cashKey(trade) {
   return `${trade.ticket || ""}|${trade.openTime || ""}|${trade.closeTime || ""}`;
 }
 
-function isCreditEntry(entry) {
-  if (entry?.type === "credit") return true;
-  return /bonus|credit|promo/i.test(String(entry?.comment || ""));
+function creditRestores(entries) {
+  const creditOuts = new Map();
+  for (const entry of entries) {
+    const amount = Number(entry.amount) || 0;
+    if (entry.type !== "credit" || amount >= 0) continue;
+    const list = creditOuts.get(entry.time) || [];
+    list.push(amount);
+    creditOuts.set(entry.time, list);
+  }
+  const restores = [];
+  for (const entry of entries) {
+    const amount = Number(entry.amount) || 0;
+    if (entry.type !== "balance" || amount <= 0) continue;
+    const comment = String(entry.comment || "");
+    const outs = creditOuts.get(entry.time) || [];
+    const match = outs.findIndex((value) => Math.abs(value + amount) < 0.02);
+    const movedBack = comment.startsWith("EXP06") || comment.startsWith("EXP01") || match >= 0;
+    if (match >= 0) outs.splice(match, 1);
+    const time = parseMt5Time(entry.time);
+    if (movedBack && time) restores.push({ time, amount });
+  }
+  return restores;
 }
 
 function rebuildCash() {
-  const entries = state.ledger || [];
-  const hasCredit = entries.some(isCreditEntry);
+  const restores = creditRestores(state.ledger || []);
   const events = [];
-  for (const entry of entries) {
-    const time = parseMt5Time(entry.time);
-    if (!time) continue;
-    let kind = "other";
-    if (isCreditEntry(entry)) kind = "credit";
-    else if (entry.type === "balance" || (entry.type === "correction" && !hasCredit)) kind = "balance";
-    events.push({ time, kind, amount: Number(entry.amount) || 0, sort: 0 });
-  }
   for (const trade of state.trades) {
     const time = parseMt5Time(trade.closeTime);
     if (!time) continue;
-    events.push({ time, kind: "trade", trade, sort: 1 });
+    events.push({ time, kind: "trade", trade, sort: 0 });
+  }
+  for (const restore of restores) {
+    events.push({ time: restore.time, kind: "restore", amount: restore.amount, sort: 1 });
   }
   events.sort((a, b) => a.time - b.time || a.sort - b.sort);
 
-  let cash = 0;
-  let credit = 0;
-  let seenLedger = false;
-  const cashNets = new Map();
+  const pending = [];
+  const covered = new Map();
   for (const event of events) {
-    if (event.kind === "balance") {
-      seenLedger = true;
-      cash += event.amount;
-    } else if (event.kind === "credit") {
-      seenLedger = true;
-      credit = Math.max(0, credit + event.amount);
-    } else if (event.kind === "trade") {
+    if (event.kind === "trade") {
       const net = netOf(event.trade);
-      let delta = net;
-      if (seenLedger && net < 0) {
-        const nextCash = cash + net;
-        if (nextCash < 0) {
-          const covered = Math.min(credit, -nextCash);
-          credit -= covered;
-          delta = net + covered;
-        }
-      }
-      cash += delta;
-      cashNets.set(cashKey(event.trade), delta);
+      if (net < 0) pending.push({ trade: event.trade, left: -net });
+      continue;
+    }
+    let left = event.amount;
+    for (let i = pending.length - 1; i >= 0 && left > 0.001; i -= 1) {
+      const row = pending[i];
+      const take = Math.min(row.left, left);
+      row.left -= take;
+      left -= take;
+      const key = cashKey(row.trade);
+      covered.set(key, (covered.get(key) || 0) + take);
     }
   }
+  const cashNets = new Map();
+  for (const trade of state.trades) {
+    const key = cashKey(trade);
+    cashNets.set(key, netOf(trade) + (covered.get(key) || 0));
+  }
   state.cashNets = cashNets;
+  state.cashAdjusted = covered.size > 0;
 }
 
 function cashOf(trade) {
@@ -640,8 +652,8 @@ function render() {
     `${all.length} closed positions · viewing ${viewLabel} · click a P&L card or a calendar day to filter`;
   const creditNote = document.getElementById("creditNote");
   if (creditNote) {
-    creditNote.textContent = state.ledger.length
-      ? "Losses are cash. Credit covers a loss only after that deposit is used up."
+    creditNote.textContent = state.cashAdjusted
+      ? "Credit the broker moves back onto the balance is not counted in these totals."
       : "Showing full trade results until the export includes deposit and credit history.";
   }
 

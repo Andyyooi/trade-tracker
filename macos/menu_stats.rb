@@ -47,62 +47,64 @@ def trade_key(trade)
   "#{trade["ticket"]}|#{trade["openTime"]}|#{trade["closeTime"]}"
 end
 
-def credit_entry?(entry)
-  return true if entry["type"] == "credit"
-  entry["comment"].to_s.match?(/bonus|credit|promo/i)
+def credit_restores(ledger)
+  credit_outs = Hash.new { |hash, key| hash[key] = [] }
+  Array(ledger).each do |entry|
+    amount = entry["amount"].to_f
+    next unless entry["type"] == "credit" && amount.negative?
+
+    credit_outs[entry["time"]] << amount
+  end
+  restores = []
+  Array(ledger).each do |entry|
+    amount = entry["amount"].to_f
+    next unless entry["type"] == "balance" && amount.positive?
+
+    comment = entry["comment"].to_s
+    outs = credit_outs[entry["time"]]
+    match = outs.index { |value| (value + amount).abs < 0.02 }
+    moved_back = comment.start_with?("EXP06") || comment.start_with?("EXP01") || match
+    outs.delete_at(match) if match
+    time = parse_mt5_time(entry["time"])
+    restores << { time: time, amount: amount } if moved_back && time
+  end
+  restores
 end
 
 def cash_amounts(trades, ledger)
-  entries = Array(ledger)
-  has_credit = entries.any? { |entry| credit_entry?(entry) }
   events = []
-  entries.each do |entry|
-    time = parse_mt5_time(entry["time"])
-    next unless time
-
-    kind = if credit_entry?(entry)
-             "credit"
-           elsif entry["type"] == "balance" || (entry["type"] == "correction" && !has_credit)
-             "balance"
-           else
-             "other"
-           end
-    events << { time: time, kind: kind, amount: entry["amount"].to_f, sort: 0 }
-  end
   trades.each do |trade|
     time = parse_mt5_time(trade["closeTime"])
     next unless time
 
-    events << { time: time, kind: "trade", trade: trade, sort: 1 }
+    events << { time: time, kind: "trade", trade: trade, sort: 0 }
+  end
+  credit_restores(ledger).each do |restore|
+    events << { time: restore[:time], kind: "restore", amount: restore[:amount], sort: 1 }
   end
   events.sort_by! { |event| [event[:time], event[:sort]] }
 
-  cash = 0.0
-  credit = 0.0
-  seen = false
-  amounts = {}
+  pending = []
+  covered = Hash.new(0.0)
   events.each do |event|
-    case event[:kind]
-    when "balance"
-      seen = true
-      cash += event[:amount]
-    when "credit"
-      seen = true
-      credit = [0.0, credit + event[:amount]].max
-    when "trade"
+    if event[:kind] == "trade"
       net = net_of(event[:trade])
-      delta = net
-      if seen && net.negative?
-        next_cash = cash + net
-        if next_cash.negative?
-          covered = [credit, -next_cash].min
-          credit -= covered
-          delta = net + covered
-        end
-      end
-      cash += delta
-      amounts[trade_key(event[:trade])] = delta
+      pending << { trade: event[:trade], left: -net } if net.negative?
+      next
     end
+    left = event[:amount]
+    pending.reverse_each do |row|
+      break unless left.positive?
+
+      take = [row[:left], left].min
+      row[:left] -= take
+      left -= take
+      covered[trade_key(row[:trade])] += take
+    end
+  end
+  amounts = {}
+  trades.each do |trade|
+    amounts[trade_key(trade)] = net_of(trade) + covered[trade_key(trade)]
   end
   amounts
 end

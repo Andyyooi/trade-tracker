@@ -1,7 +1,1924 @@
 {
   "currency": "USD",
   "source": "MT5 auto-export",
-  "exportedAt": "2026.10.14 09:15:46",
+  "exportedAt": "2026.10.14 09:31:19",
+  "serverUtcOffsetMinutes": 180,
+  "ledger": [
+    {
+      "time": "2026.09.25 14:35:28",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 263789460"
+    },
+    {
+      "time": "2026.09.25 14:35:28",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 263789460"
+    },
+    {
+      "time": "2026.09.25 14:50:34",
+      "type": "credit",
+      "amount": 2.0,
+      "comment": "Credit-In-XMC"
+    },
+    {
+      "time": "2026.09.25 16:23:34",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 263811562"
+    },
+    {
+      "time": "2026.09.25 16:23:34",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 263811562"
+    },
+    {
+      "time": "2026.09.25 16:27:27",
+      "type": "balance",
+      "amount": 49.09,
+      "comment": "CD-SC-BWR 263813012"
+    },
+    {
+      "time": "2026.09.25 16:27:27",
+      "type": "balance",
+      "amount": 0.91,
+      "comment": "EXP05-SC-BWR 263813012"
+    },
+    {
+      "time": "2026.09.25 16:38:20",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 263818568"
+    },
+    {
+      "time": "2026.09.25 16:38:20",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 263818568"
+    },
+    {
+      "time": "2026.09.28 03:33:14",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 263968019"
+    },
+    {
+      "time": "2026.09.28 03:33:14",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 263968019"
+    },
+    {
+      "time": "2026.09.28 04:03:34",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 263980208"
+    },
+    {
+      "time": "2026.09.28 04:03:34",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 263980208"
+    },
+    {
+      "time": "2026.09.28 04:45:49",
+      "type": "credit",
+      "amount": 2.0,
+      "comment": "Credit-In-XMC"
+    },
+    {
+      "time": "2026.09.28 04:58:07",
+      "type": "balance",
+      "amount": 0.98,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.09.28 04:58:07",
+      "type": "credit",
+      "amount": -0.98,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.09.28 04:58:07",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 263999938"
+    },
+    {
+      "time": "2026.09.28 04:58:07",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 263999938"
+    },
+    {
+      "time": "2026.09.28 05:48:37",
+      "type": "balance",
+      "amount": 2.28,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.09.28 05:48:37",
+      "type": "credit",
+      "amount": -2.28,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.09.28 10:17:28",
+      "type": "balance",
+      "amount": 49.09,
+      "comment": "CD-SC-BWR 264090986"
+    },
+    {
+      "time": "2026.09.28 10:17:28",
+      "type": "balance",
+      "amount": 0.91,
+      "comment": "EXP05-SC-BWR 264090986"
+    },
+    {
+      "time": "2026.09.28 10:39:45",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 264099884"
+    },
+    {
+      "time": "2026.09.28 10:39:45",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 264099884"
+    },
+    {
+      "time": "2026.09.28 17:07:20",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 264218953"
+    },
+    {
+      "time": "2026.09.28 17:07:20",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 264218953"
+    },
+    {
+      "time": "2026.09.28 17:16:56",
+      "type": "balance",
+      "amount": 48.98,
+      "comment": "CD-SC-BWR 264222542"
+    },
+    {
+      "time": "2026.09.28 17:16:56",
+      "type": "balance",
+      "amount": 0.91,
+      "comment": "EXP05-SC-BWR 264222542"
+    },
+    {
+      "time": "2026.09.29 07:34:29",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 264343081"
+    },
+    {
+      "time": "2026.09.29 07:34:29",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 264343081"
+    },
+    {
+      "time": "2026.09.29 10:30:52",
+      "type": "balance",
+      "amount": 47.28,
+      "comment": "CD-PA-BWR 264371666"
+    },
+    {
+      "time": "2026.09.29 10:30:52",
+      "type": "balance",
+      "amount": 1.41,
+      "comment": "EXP05-PA-BWR 264371666"
+    },
+    {
+      "time": "2026.10.01 08:19:59",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 264800721"
+    },
+    {
+      "time": "2026.10.01 08:19:59",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 264800721"
+    },
+    {
+      "time": "2026.10.02 04:07:20",
+      "type": "balance",
+      "amount": -415.0,
+      "comment": "CW-SC-BWR 57354785p"
+    },
+    {
+      "time": "2026.10.02 04:06:16",
+      "type": "credit",
+      "amount": -0.66,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.02 04:10:14",
+      "type": "balance",
+      "amount": 49.09,
+      "comment": "CD-SC-BWR 265005968"
+    },
+    {
+      "time": "2026.10.02 04:10:14",
+      "type": "balance",
+      "amount": 0.91,
+      "comment": "EXP05-SC-BWR 265005968"
+    },
+    {
+      "time": "2026.10.02 07:22:21",
+      "type": "balance",
+      "amount": -466.4,
+      "comment": "CW-SC-BWR 57363118p"
+    },
+    {
+      "time": "2026.10.02 07:11:19",
+      "type": "credit",
+      "amount": -0.07,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.02 09:05:49",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 265058857"
+    },
+    {
+      "time": "2026.10.02 09:05:49",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 265058857"
+    },
+    {
+      "time": "2026.10.02 10:12:18",
+      "type": "balance",
+      "amount": -128.0,
+      "comment": "CW-PA-BWR 57370966p"
+    },
+    {
+      "time": "2026.10.02 10:11:07",
+      "type": "credit",
+      "amount": -0.01,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.02 13:14:09",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 265114669"
+    },
+    {
+      "time": "2026.10.02 13:14:09",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 265114669"
+    },
+    {
+      "time": "2026.10.02 13:23:09",
+      "type": "balance",
+      "amount": 49.09,
+      "comment": "CD-SC-BWR 265118452"
+    },
+    {
+      "time": "2026.10.02 13:23:09",
+      "type": "balance",
+      "amount": 0.91,
+      "comment": "EXP05-SC-BWR 265118452"
+    },
+    {
+      "time": "2026.10.02 16:00:24",
+      "type": "balance",
+      "amount": -486.6,
+      "comment": "CW-SC-BWR 57396847p"
+    },
+    {
+      "time": "2026.10.05 03:24:33",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 265400528"
+    },
+    {
+      "time": "2026.10.05 03:24:33",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 265400528"
+    },
+    {
+      "time": "2026.10.05 05:10:52",
+      "type": "balance",
+      "amount": 48.15,
+      "comment": "CD-EC-BWR 265414385"
+    },
+    {
+      "time": "2026.10.05 05:10:52",
+      "type": "balance",
+      "amount": 1.85,
+      "comment": "EXP05-EC-BWR 265414385"
+    },
+    {
+      "time": "2026.10.05 05:50:10",
+      "type": "balance",
+      "amount": 49.09,
+      "comment": "CD-SC-BWR 265419973"
+    },
+    {
+      "time": "2026.10.05 05:50:10",
+      "type": "balance",
+      "amount": 0.91,
+      "comment": "EXP05-SC-BWR 265419973"
+    },
+    {
+      "time": "2026.10.05 05:57:06",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 265422231"
+    },
+    {
+      "time": "2026.10.05 05:57:06",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 265422231"
+    },
+    {
+      "time": "2026.10.05 07:16:39",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 265437738"
+    },
+    {
+      "time": "2026.10.05 07:16:39",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 265437738"
+    },
+    {
+      "time": "2026.10.05 07:28:56",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 265441438"
+    },
+    {
+      "time": "2026.10.05 07:28:56",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 265441438"
+    },
+    {
+      "time": "2026.10.05 09:12:19",
+      "type": "balance",
+      "amount": -173.7,
+      "comment": "CW-PA-BWR 57481826p"
+    },
+    {
+      "time": "2026.10.05 09:14:16",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 265463574"
+    },
+    {
+      "time": "2026.10.05 09:14:16",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 265463574"
+    },
+    {
+      "time": "2026.10.05 10:08:04",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 265475640"
+    },
+    {
+      "time": "2026.10.05 10:08:04",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 265475640"
+    },
+    {
+      "time": "2026.10.05 11:12:46",
+      "type": "balance",
+      "amount": 49.09,
+      "comment": "CD-SC-BWR 265490591"
+    },
+    {
+      "time": "2026.10.05 11:12:46",
+      "type": "balance",
+      "amount": 0.91,
+      "comment": "EXP05-SC-BWR 265490591"
+    },
+    {
+      "time": "2026.10.05 19:13:28",
+      "type": "balance",
+      "amount": -372.7,
+      "comment": "CW-ZTP-BWR 57516107p"
+    },
+    {
+      "time": "2026.10.06 13:42:12",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 265739041"
+    },
+    {
+      "time": "2026.10.06 13:42:12",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 265739041"
+    },
+    {
+      "time": "2026.10.06 13:42:13",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.06 14:19:47",
+      "type": "balance",
+      "amount": 2.01,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.06 14:19:47",
+      "type": "credit",
+      "amount": -2.01,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.06 14:19:47",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 265746519"
+    },
+    {
+      "time": "2026.10.06 14:19:47",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 265746519"
+    },
+    {
+      "time": "2026.10.06 14:19:48",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.06 14:39:32",
+      "type": "balance",
+      "amount": 13.0,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.06 14:39:32",
+      "type": "credit",
+      "amount": -13.0,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.06 14:40:39",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 265753822"
+    },
+    {
+      "time": "2026.10.06 14:40:39",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 265753822"
+    },
+    {
+      "time": "2026.10.06 14:40:40",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.06 14:52:35",
+      "type": "balance",
+      "amount": 7.0,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.06 14:52:35",
+      "type": "credit",
+      "amount": -7.0,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.06 14:52:35",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 265757559"
+    },
+    {
+      "time": "2026.10.06 14:52:36",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 265757559"
+    },
+    {
+      "time": "2026.10.06 14:52:36",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.06 15:13:42",
+      "type": "balance",
+      "amount": 9.9,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.06 15:13:42",
+      "type": "credit",
+      "amount": -9.9,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.06 15:13:42",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 265765693"
+    },
+    {
+      "time": "2026.10.06 15:13:42",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 265765693"
+    },
+    {
+      "time": "2026.10.06 15:13:44",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.06 17:26:20",
+      "type": "balance",
+      "amount": -308.0,
+      "comment": "CW-PZN-BWR 57562124p"
+    },
+    {
+      "time": "2026.10.06 17:26:07",
+      "type": "credit",
+      "amount": -15.55,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.06 21:27:17",
+      "type": "balance",
+      "amount": -220.0,
+      "comment": "CW-PZN-BWR 57573164p"
+    },
+    {
+      "time": "2026.10.06 21:26:01",
+      "type": "credit",
+      "amount": -2.07,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.07 06:15:10",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 265874416"
+    },
+    {
+      "time": "2026.10.07 06:15:10",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 265874416"
+    },
+    {
+      "time": "2026.10.07 06:15:10",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.07 08:00:57",
+      "type": "balance",
+      "amount": 5.2,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.07 08:00:57",
+      "type": "credit",
+      "amount": -5.2,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.07 08:00:57",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 265886514"
+    },
+    {
+      "time": "2026.10.07 08:00:57",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 265886514"
+    },
+    {
+      "time": "2026.10.07 08:00:57",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.07 09:01:15",
+      "type": "balance",
+      "amount": 7.8,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.07 09:01:15",
+      "type": "credit",
+      "amount": -7.8,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.07 09:01:15",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 265895853"
+    },
+    {
+      "time": "2026.10.07 09:01:15",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 265895853"
+    },
+    {
+      "time": "2026.10.07 09:01:16",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.07 11:59:52",
+      "type": "balance",
+      "amount": 10.2,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.07 11:59:52",
+      "type": "credit",
+      "amount": -10.2,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.07 11:59:52",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 265925558"
+    },
+    {
+      "time": "2026.10.07 11:59:52",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 265925558"
+    },
+    {
+      "time": "2026.10.07 11:59:53",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.07 12:42:07",
+      "type": "balance",
+      "amount": 9.3,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.07 12:42:07",
+      "type": "credit",
+      "amount": -9.3,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.07 12:42:07",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 265935169"
+    },
+    {
+      "time": "2026.10.07 12:42:07",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 265935169"
+    },
+    {
+      "time": "2026.10.07 12:42:08",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.07 13:30:55",
+      "type": "balance",
+      "amount": 14.3,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.07 13:30:55",
+      "type": "credit",
+      "amount": -14.3,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.07 13:32:03",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 265947490"
+    },
+    {
+      "time": "2026.10.07 13:32:03",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 265947490"
+    },
+    {
+      "time": "2026.10.07 13:32:03",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.07 15:26:01",
+      "type": "balance",
+      "amount": 7.43,
+      "comment": "EXP01"
+    },
+    {
+      "time": "2026.10.07 15:26:01",
+      "type": "balance",
+      "amount": 13.67,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.07 15:26:01",
+      "type": "credit",
+      "amount": -13.67,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.07 15:27:50",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 265976980"
+    },
+    {
+      "time": "2026.10.07 15:27:51",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 265976980"
+    },
+    {
+      "time": "2026.10.07 15:27:52",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.07 15:30:13",
+      "type": "balance",
+      "amount": 3.1,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.07 15:30:13",
+      "type": "credit",
+      "amount": -3.1,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.07 15:30:13",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 265980645"
+    },
+    {
+      "time": "2026.10.07 15:30:13",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 265980645"
+    },
+    {
+      "time": "2026.10.07 15:30:13",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.07 15:31:28",
+      "type": "balance",
+      "amount": 9.0,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.07 15:31:28",
+      "type": "credit",
+      "amount": -9.0,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.07 15:31:28",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 265983316"
+    },
+    {
+      "time": "2026.10.07 15:31:28",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 265983316"
+    },
+    {
+      "time": "2026.10.07 15:31:28",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.07 15:38:43",
+      "type": "balance",
+      "amount": 11.6,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.07 15:38:43",
+      "type": "credit",
+      "amount": -11.6,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.07 15:38:43",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 265992593"
+    },
+    {
+      "time": "2026.10.07 15:38:43",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 265992593"
+    },
+    {
+      "time": "2026.10.07 15:38:44",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.07 15:45:42",
+      "type": "balance",
+      "amount": 8.2,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.07 15:45:42",
+      "type": "credit",
+      "amount": -8.2,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.07 15:45:42",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 265999806"
+    },
+    {
+      "time": "2026.10.07 15:45:42",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 265999806"
+    },
+    {
+      "time": "2026.10.07 15:45:43",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.08 04:02:25",
+      "type": "balance",
+      "amount": -528.5,
+      "comment": "CW-EC-BWR 57632713p"
+    },
+    {
+      "time": "2026.10.08 04:01:08",
+      "type": "credit",
+      "amount": -16.53,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.08 04:03:29",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 266121873"
+    },
+    {
+      "time": "2026.10.08 04:03:29",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 266121873"
+    },
+    {
+      "time": "2026.10.08 04:03:29",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.08 04:06:16",
+      "type": "credit",
+      "amount": 5.0,
+      "comment": "Credit-In-XMC"
+    },
+    {
+      "time": "2026.10.08 04:50:24",
+      "type": "balance",
+      "amount": 10.55,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.08 04:50:24",
+      "type": "credit",
+      "amount": -10.55,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.08 04:50:24",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 266128998"
+    },
+    {
+      "time": "2026.10.08 04:50:24",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 266128998"
+    },
+    {
+      "time": "2026.10.08 04:50:25",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.08 05:34:11",
+      "type": "balance",
+      "amount": 8.2,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.08 05:34:11",
+      "type": "credit",
+      "amount": -8.2,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.08 05:34:11",
+      "type": "balance",
+      "amount": 48.15,
+      "comment": "CD-EC-BWR 266134039"
+    },
+    {
+      "time": "2026.10.08 05:34:12",
+      "type": "balance",
+      "amount": 1.85,
+      "comment": "EXP05-EC-BWR 266134039"
+    },
+    {
+      "time": "2026.10.08 05:34:12",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.09 04:14:53",
+      "type": "balance",
+      "amount": 10.34,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.09 04:14:53",
+      "type": "credit",
+      "amount": -10.34,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.09 04:14:53",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 266312853"
+    },
+    {
+      "time": "2026.10.09 04:14:53",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 266312853"
+    },
+    {
+      "time": "2026.10.09 04:14:53",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.09 04:24:35",
+      "type": "balance",
+      "amount": 10.1,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.09 04:24:35",
+      "type": "credit",
+      "amount": -10.1,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.09 04:24:35",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 266314598"
+    },
+    {
+      "time": "2026.10.09 04:24:35",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 266314598"
+    },
+    {
+      "time": "2026.10.09 04:24:35",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.09 04:35:09",
+      "type": "balance",
+      "amount": 9.2,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.09 04:35:09",
+      "type": "credit",
+      "amount": -9.2,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.09 04:35:09",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 266317132"
+    },
+    {
+      "time": "2026.10.09 04:35:10",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 266317132"
+    },
+    {
+      "time": "2026.10.09 04:35:10",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.09 04:42:43",
+      "type": "balance",
+      "amount": 10.0,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.09 04:42:43",
+      "type": "credit",
+      "amount": -10.0,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.09 04:42:43",
+      "type": "balance",
+      "amount": 48.15,
+      "comment": "CD-EC-BWR 266319228"
+    },
+    {
+      "time": "2026.10.09 04:42:43",
+      "type": "balance",
+      "amount": 1.85,
+      "comment": "EXP05-EC-BWR 266319228"
+    },
+    {
+      "time": "2026.10.09 04:42:43",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.09 05:58:03",
+      "type": "balance",
+      "amount": 10.7,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.09 05:58:03",
+      "type": "credit",
+      "amount": -10.7,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.09 05:58:03",
+      "type": "balance",
+      "amount": 49.09,
+      "comment": "CD-SC-BWR 266330092"
+    },
+    {
+      "time": "2026.10.09 05:58:03",
+      "type": "balance",
+      "amount": 0.91,
+      "comment": "EXP05-SC-BWR 266330092"
+    },
+    {
+      "time": "2026.10.09 05:58:03",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.09 08:04:23",
+      "type": "balance",
+      "amount": 9.6,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.09 08:04:24",
+      "type": "credit",
+      "amount": -9.6,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.09 08:04:24",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 266347086"
+    },
+    {
+      "time": "2026.10.09 08:04:24",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 266347086"
+    },
+    {
+      "time": "2026.10.09 08:04:24",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.09 08:29:43",
+      "type": "balance",
+      "amount": 9.8,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.09 08:29:43",
+      "type": "credit",
+      "amount": -9.8,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.09 08:29:43",
+      "type": "balance",
+      "amount": 49.09,
+      "comment": "CD-SC-BWR 266352654"
+    },
+    {
+      "time": "2026.10.09 08:29:43",
+      "type": "balance",
+      "amount": 0.91,
+      "comment": "EXP05-SC-BWR 266352654"
+    },
+    {
+      "time": "2026.10.09 08:29:43",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.09 08:34:39",
+      "type": "balance",
+      "amount": 10.5,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.09 08:34:39",
+      "type": "credit",
+      "amount": -10.5,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.09 08:34:39",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 266354642"
+    },
+    {
+      "time": "2026.10.09 08:34:39",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 266354642"
+    },
+    {
+      "time": "2026.10.09 08:34:39",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.09 08:38:30",
+      "type": "balance",
+      "amount": 10.1,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.09 08:38:30",
+      "type": "credit",
+      "amount": -10.1,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.09 08:38:30",
+      "type": "balance",
+      "amount": 48.15,
+      "comment": "CD-EC-BWR 266356836"
+    },
+    {
+      "time": "2026.10.09 08:38:30",
+      "type": "balance",
+      "amount": 1.85,
+      "comment": "EXP05-EC-BWR 266356836"
+    },
+    {
+      "time": "2026.10.09 08:38:30",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.09 15:54:31",
+      "type": "balance",
+      "amount": 9.2,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.09 15:54:31",
+      "type": "credit",
+      "amount": -9.2,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.09 15:54:31",
+      "type": "balance",
+      "amount": 48.15,
+      "comment": "CD-EC-BWR 266422569"
+    },
+    {
+      "time": "2026.10.09 15:54:31",
+      "type": "balance",
+      "amount": 1.85,
+      "comment": "EXP05-EC-BWR 266422569"
+    },
+    {
+      "time": "2026.10.09 15:54:32",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.09 20:36:19",
+      "type": "balance",
+      "amount": -213.0,
+      "comment": "CW-PA-BWR 57727509p"
+    },
+    {
+      "time": "2026.10.09 20:35:55",
+      "type": "credit",
+      "amount": -14.8,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.12 07:09:20",
+      "type": "balance",
+      "amount": 48.15,
+      "comment": "CD-EC-BWR 266572403"
+    },
+    {
+      "time": "2026.10.12 07:09:20",
+      "type": "balance",
+      "amount": 1.85,
+      "comment": "EXP05-EC-BWR 266572403"
+    },
+    {
+      "time": "2026.10.12 07:09:21",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.12 07:56:20",
+      "type": "balance",
+      "amount": 5.2,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.12 07:56:20",
+      "type": "credit",
+      "amount": -5.2,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.12 07:56:20",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 266578477"
+    },
+    {
+      "time": "2026.10.12 07:56:20",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 266578477"
+    },
+    {
+      "time": "2026.10.12 07:56:21",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.12 08:17:48",
+      "type": "balance",
+      "amount": 12.1,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.12 08:17:48",
+      "type": "credit",
+      "amount": -12.1,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.12 08:17:48",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 266583337"
+    },
+    {
+      "time": "2026.10.12 08:17:48",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 266583337"
+    },
+    {
+      "time": "2026.10.12 08:17:49",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.12 08:31:17",
+      "type": "credit",
+      "amount": 2.0,
+      "comment": "Credit-In-XMC"
+    },
+    {
+      "time": "2026.10.12 08:34:11",
+      "type": "balance",
+      "amount": 10.9,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.12 08:34:11",
+      "type": "credit",
+      "amount": -10.9,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.12 08:34:11",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 266587883"
+    },
+    {
+      "time": "2026.10.12 08:34:12",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 266587883"
+    },
+    {
+      "time": "2026.10.12 08:34:12",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.12 11:25:37",
+      "type": "balance",
+      "amount": 9.0,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.12 11:25:37",
+      "type": "credit",
+      "amount": -9.0,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.12 11:25:37",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 266614781"
+    },
+    {
+      "time": "2026.10.12 11:25:37",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 266614781"
+    },
+    {
+      "time": "2026.10.12 11:25:37",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.12 12:41:21",
+      "type": "balance",
+      "amount": 10.0,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.12 12:41:21",
+      "type": "credit",
+      "amount": -10.0,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.12 12:41:21",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 266625557"
+    },
+    {
+      "time": "2026.10.12 12:41:21",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 266625557"
+    },
+    {
+      "time": "2026.10.12 12:41:21",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.12 15:23:55",
+      "type": "credit",
+      "amount": 2.0,
+      "comment": "Credit-In-XMC"
+    },
+    {
+      "time": "2026.10.12 15:29:41",
+      "type": "balance",
+      "amount": 16.47,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.12 15:29:41",
+      "type": "credit",
+      "amount": -16.47,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.12 15:30:04",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 266653111"
+    },
+    {
+      "time": "2026.10.12 15:30:05",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 266653111"
+    },
+    {
+      "time": "2026.10.12 15:30:05",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.12 16:09:32",
+      "type": "balance",
+      "amount": 9.97,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.12 16:09:32",
+      "type": "credit",
+      "amount": -9.97,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.12 16:34:23",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 266670655"
+    },
+    {
+      "time": "2026.10.12 16:34:23",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 266670655"
+    },
+    {
+      "time": "2026.10.12 16:34:24",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.13 07:40:22",
+      "type": "balance",
+      "amount": -375.9,
+      "comment": "CW-PA-BWR 57797763p"
+    },
+    {
+      "time": "2026.10.13 07:39:29",
+      "type": "credit",
+      "amount": -12.21,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.13 09:30:25",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 266772688"
+    },
+    {
+      "time": "2026.10.13 09:30:25",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 266772688"
+    },
+    {
+      "time": "2026.10.13 09:30:26",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.13 12:32:38",
+      "type": "balance",
+      "amount": 5.35,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.13 12:32:38",
+      "type": "credit",
+      "amount": -5.35,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.13 12:32:38",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 266794753"
+    },
+    {
+      "time": "2026.10.13 12:32:38",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 266794753"
+    },
+    {
+      "time": "2026.10.13 12:32:39",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.13 16:06:24",
+      "type": "balance",
+      "amount": 9.8,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.13 16:06:24",
+      "type": "credit",
+      "amount": -9.8,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.13 16:06:24",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 266823924"
+    },
+    {
+      "time": "2026.10.13 16:06:24",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 266823924"
+    },
+    {
+      "time": "2026.10.13 16:06:24",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.13 17:03:18",
+      "type": "balance",
+      "amount": 8.3,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.13 17:03:18",
+      "type": "credit",
+      "amount": -8.3,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.13 17:03:18",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 266836964"
+    },
+    {
+      "time": "2026.10.13 17:03:18",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 266836964"
+    },
+    {
+      "time": "2026.10.13 17:03:18",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.13 18:30:09",
+      "type": "balance",
+      "amount": 11.0,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.13 18:30:09",
+      "type": "credit",
+      "amount": -11.0,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.13 18:30:09",
+      "type": "balance",
+      "amount": 48.51,
+      "comment": "CD-ZTP-BWR 266853720"
+    },
+    {
+      "time": "2026.10.13 18:30:09",
+      "type": "balance",
+      "amount": 1.47,
+      "comment": "EXP05-ZTP-BWR 266853720"
+    },
+    {
+      "time": "2026.10.13 18:30:10",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.13 19:58:17",
+      "type": "balance",
+      "amount": 9.62,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.13 19:58:17",
+      "type": "credit",
+      "amount": -9.62,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.13 19:58:17",
+      "type": "balance",
+      "amount": 48.13,
+      "comment": "CD-EC-BWR 266867583"
+    },
+    {
+      "time": "2026.10.13 19:58:17",
+      "type": "balance",
+      "amount": 1.85,
+      "comment": "EXP05-EC-BWR 266867583"
+    },
+    {
+      "time": "2026.10.13 19:58:17",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.13 20:34:21",
+      "type": "credit",
+      "amount": 2.0,
+      "comment": "Credit-In-XMC"
+    },
+    {
+      "time": "2026.10.14 04:18:47",
+      "type": "balance",
+      "amount": 11.9,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.14 04:18:47",
+      "type": "credit",
+      "amount": -11.9,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.14 04:18:47",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 266902329"
+    },
+    {
+      "time": "2026.10.14 04:18:47",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 266902329"
+    },
+    {
+      "time": "2026.10.14 04:18:48",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.14 04:37:52",
+      "type": "balance",
+      "amount": 9.9,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.14 04:37:52",
+      "type": "credit",
+      "amount": -9.9,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.14 04:37:52",
+      "type": "balance",
+      "amount": 48.02,
+      "comment": "CD-EC-BWR 266904875"
+    },
+    {
+      "time": "2026.10.14 04:37:52",
+      "type": "balance",
+      "amount": 1.85,
+      "comment": "EXP05-EC-BWR 266904875"
+    },
+    {
+      "time": "2026.10.14 04:37:52",
+      "type": "credit",
+      "amount": 9.97,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.14 04:49:48",
+      "type": "balance",
+      "amount": 10.13,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.14 04:49:48",
+      "type": "credit",
+      "amount": -10.13,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.14 04:49:48",
+      "type": "balance",
+      "amount": 48.52,
+      "comment": "CD-ZTP-BWR 266907026"
+    },
+    {
+      "time": "2026.10.14 04:49:48",
+      "type": "balance",
+      "amount": 1.48,
+      "comment": "EXP05-ZTP-BWR 266907026"
+    },
+    {
+      "time": "2026.10.14 04:49:49",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.14 05:16:20",
+      "type": "balance",
+      "amount": 10.5,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.14 05:16:20",
+      "type": "credit",
+      "amount": -10.5,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.14 05:16:20",
+      "type": "balance",
+      "amount": 48.55,
+      "comment": "CD-PA-BWR 266910413"
+    },
+    {
+      "time": "2026.10.14 05:16:20",
+      "type": "balance",
+      "amount": 1.45,
+      "comment": "EXP05-PA-BWR 266910413"
+    },
+    {
+      "time": "2026.10.14 05:16:20",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.14 08:54:55",
+      "type": "balance",
+      "amount": 9.5,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.14 08:54:55",
+      "type": "credit",
+      "amount": -9.5,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.14 08:54:55",
+      "type": "balance",
+      "amount": 48.15,
+      "comment": "CD-EC-BWR 266932482"
+    },
+    {
+      "time": "2026.10.14 08:54:55",
+      "type": "balance",
+      "amount": 1.85,
+      "comment": "EXP05-EC-BWR 266932482"
+    },
+    {
+      "time": "2026.10.14 08:54:55",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    },
+    {
+      "time": "2026.10.14 09:00:58",
+      "type": "balance",
+      "amount": 9.7,
+      "comment": "EXP06"
+    },
+    {
+      "time": "2026.10.14 09:00:58",
+      "type": "credit",
+      "amount": -9.7,
+      "comment": "Credit Out"
+    },
+    {
+      "time": "2026.10.14 09:00:58",
+      "type": "balance",
+      "amount": 48.75,
+      "comment": "CD-PZN-BWR 266933779"
+    },
+    {
+      "time": "2026.10.14 09:00:58",
+      "type": "balance",
+      "amount": 1.25,
+      "comment": "EXP05-PZN-BWR 266933779"
+    },
+    {
+      "time": "2026.10.14 09:00:58",
+      "type": "credit",
+      "amount": 10.0,
+      "comment": "Credit In - 20% - 5000 - GFE"
+    }
+  ],
   "trades": [
     {
       "openTime": "2026.09.25 16:16:05",
