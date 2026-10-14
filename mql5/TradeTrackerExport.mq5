@@ -23,6 +23,57 @@ bool IsTradeDeal(const long type)
    return(type == DEAL_TYPE_BUY || type == DEAL_TYPE_SELL);
   }
 
+bool IsBonusComment(string comment)
+  {
+   StringToLower(comment);
+   return StringFind(comment, "bonus") >= 0
+       || StringFind(comment, "credit") >= 0
+       || StringFind(comment, "promo") >= 0;
+  }
+
+string LedgerKind(const long type, const string comment)
+  {
+   if(type == DEAL_TYPE_CREDIT || type == DEAL_TYPE_BONUS)
+      return "credit";
+   if(type == DEAL_TYPE_BALANCE && IsBonusComment(comment))
+      return "credit";
+   if(type == DEAL_TYPE_BALANCE)
+      return "balance";
+   if(type == DEAL_TYPE_CORRECTION)
+      return "correction";
+   return "";
+  }
+
+void BuildLedger(string &body, int &count)
+  {
+   body = "";
+   count = 0;
+   const int total = HistoryDealsTotal();
+   for(int i = 0; i < total; i++)
+     {
+      const ulong ticket = HistoryDealGetTicket(i);
+      if(ticket == 0)
+         continue;
+      const long type = HistoryDealGetInteger(ticket, DEAL_TYPE);
+      const string comment = HistoryDealGetString(ticket, DEAL_COMMENT);
+      const string kind = LedgerKind(type, comment);
+      if(kind == "")
+         continue;
+
+      const double amount = HistoryDealGetDouble(ticket, DEAL_PROFIT);
+      const datetime time = (datetime)HistoryDealGetInteger(ticket, DEAL_TIME);
+      if(count > 0)
+         body += ",";
+      body += "{";
+      body += "\"time\":" + JsonString(TimeToString(time, TIME_DATE | TIME_SECONDS)) + ",";
+      body += "\"type\":" + JsonString(kind) + ",";
+      body += "\"amount\":" + DoubleToString(amount, 2) + ",";
+      body += "\"comment\":" + JsonString(comment);
+      body += "}";
+      count++;
+     }
+  }
+
 string PositionTypeName(const long deal_type)
   {
    return(deal_type == DEAL_TYPE_SELL ? "sell" : "buy");
@@ -161,6 +212,10 @@ void ExportClosedTrades()
       return;
      }
 
+   string ledgerBody = "";
+   int ledgerCount = 0;
+   BuildLedger(ledgerBody, ledgerCount);
+
    ulong ids[];
    CollectPositionIds(ids);
 
@@ -189,12 +244,15 @@ void ExportClosedTrades()
    json += "\"source\":\"MT5 auto-export\",";
    json += "\"exportedAt\":" + JsonString(TimeToString(TimeCurrent(), TIME_DATE | TIME_SECONDS)) + ",";
    json += "\"serverUtcOffsetMinutes\":" + IntegerToString((int)((TimeCurrent() - TimeGMT()) / 60)) + ",";
+   json += "\"ledger\":[";
+   json += ledgerBody;
+   json += "],";
    json += "\"trades\":[";
    json += body;
    json += "]}";
    FileWriteString(handle, json);
    FileClose(handle);
-   Print("Trade Tracker: wrote ", count, " closed trades to Common\\\\Files\\\\", InpFileName);
+   Print("Trade Tracker: wrote ", count, " closed trades and ", ledgerCount, " balance entries to Common\\\\Files\\\\", InpFileName);
   }
 
 int OnInit()

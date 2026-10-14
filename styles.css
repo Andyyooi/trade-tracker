@@ -75,6 +75,12 @@ h1 {
 
 .hidden-input { display: none; }
 
+.credit-note {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .kpis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

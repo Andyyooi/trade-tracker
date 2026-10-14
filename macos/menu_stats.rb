@@ -43,6 +43,76 @@ def net_of(trade)
   end
 end
 
+def trade_key(trade)
+  "#{trade["ticket"]}|#{trade["openTime"]}|#{trade["closeTime"]}"
+end
+
+def credit_entry?(entry)
+  return true if entry["type"] == "credit"
+  entry["comment"].to_s.match?(/bonus|credit|promo/i)
+end
+
+def cash_amounts(trades, ledger)
+  entries = Array(ledger)
+  has_credit = entries.any? { |entry| credit_entry?(entry) }
+  events = []
+  entries.each do |entry|
+    time = parse_mt5_time(entry["time"])
+    next unless time
+
+    kind = if credit_entry?(entry)
+             "credit"
+           elsif entry["type"] == "balance" || (entry["type"] == "correction" && !has_credit)
+             "balance"
+           else
+             "other"
+           end
+    events << { time: time, kind: kind, amount: entry["amount"].to_f, sort: 0 }
+  end
+  trades.each do |trade|
+    time = parse_mt5_time(trade["closeTime"])
+    next unless time
+
+    events << { time: time, kind: "trade", trade: trade, sort: 1 }
+  end
+  events.sort_by! { |event| [event[:time], event[:sort]] }
+
+  cash = 0.0
+  credit = 0.0
+  seen = false
+  amounts = {}
+  events.each do |event|
+    case event[:kind]
+    when "balance"
+      seen = true
+      cash += event[:amount]
+    when "credit"
+      seen = true
+      credit = [0.0, credit + event[:amount]].max
+    when "trade"
+      net = net_of(event[:trade])
+      delta = net
+      if seen && net.negative?
+        next_cash = cash + net
+        if next_cash.negative?
+          covered = [credit, -next_cash].min
+          credit -= covered
+          delta = net + covered
+        end
+      end
+      cash += delta
+      amounts[trade_key(event[:trade])] = delta
+    end
+  end
+  amounts
+end
+
+CASH_NETS = {}
+
+def cash_of(trade)
+  CASH_NETS.fetch(trade_key(trade), net_of(trade))
+end
+
 def break_even?(trade)
   n = net_of(trade)
   n >= -BE_LOSS_MAX && n <= BE_PROFIT_MAX
@@ -61,7 +131,7 @@ def in_range?(trade, range, now)
 end
 
 def summarize(trades)
-  pnl = trades.sum { |t| net_of(t) }
+  pnl = trades.sum { |t| cash_of(t) }
   decided = trades.reject { |t| break_even?(t) }
   wins = decided.select { |t| net_of(t) > 0 }
   losses = decided.select { |t| net_of(t) < 0 }
@@ -79,6 +149,7 @@ def money(value)
   format("%s$%.2f", sign, value.abs)
 end
 
+if __FILE__ == $PROGRAM_NAME
 src = CANDIDATES.select { |path| File.file?(path) }.max_by { |path| File.mtime(path) }
 now = Time.now
 empty = { today: 0, week: 0, month: 0, all: 0, winRate: 0, trades: 0, be: 0, title: "$0.00", positive: true, source: "none" }
@@ -89,6 +160,7 @@ payload =
   else
     data = JSON.parse(File.read(src))
     trades = Array(data["trades"])
+    CASH_NETS.replace(cash_amounts(trades, data["ledger"]))
     today = summarize(trades.select { |t| in_range?(t, :today, now) })
     week = summarize(trades.select { |t| in_range?(t, :week, now) })
     month = summarize(trades.select { |t| in_range?(t, :month, now) })
@@ -113,3 +185,4 @@ payload =
   end
 
 print JSON.generate(payload)
+end

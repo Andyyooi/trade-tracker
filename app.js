@@ -93,6 +93,9 @@ const state = {
   day: null,
   calendarMonth: new Date(),
   calendarTouched: false,
+  ledger: [],
+  ledgerKey: "",
+  cashNets: new Map(),
   charts: {},
 };
 
@@ -146,6 +149,68 @@ function netOf(trade) {
   return Number(trade.net ?? (Number(trade.profit) + Number(trade.commission || 0) + Number(trade.swap || 0)));
 }
 
+function cashKey(trade) {
+  return `${trade.ticket || ""}|${trade.openTime || ""}|${trade.closeTime || ""}`;
+}
+
+function isCreditEntry(entry) {
+  if (entry?.type === "credit") return true;
+  return /bonus|credit|promo/i.test(String(entry?.comment || ""));
+}
+
+function rebuildCash() {
+  const entries = state.ledger || [];
+  const hasCredit = entries.some(isCreditEntry);
+  const events = [];
+  for (const entry of entries) {
+    const time = parseMt5Time(entry.time);
+    if (!time) continue;
+    let kind = "other";
+    if (isCreditEntry(entry)) kind = "credit";
+    else if (entry.type === "balance" || (entry.type === "correction" && !hasCredit)) kind = "balance";
+    events.push({ time, kind, amount: Number(entry.amount) || 0, sort: 0 });
+  }
+  for (const trade of state.trades) {
+    const time = parseMt5Time(trade.closeTime);
+    if (!time) continue;
+    events.push({ time, kind: "trade", trade, sort: 1 });
+  }
+  events.sort((a, b) => a.time - b.time || a.sort - b.sort);
+
+  let cash = 0;
+  let credit = 0;
+  let seenLedger = false;
+  const cashNets = new Map();
+  for (const event of events) {
+    if (event.kind === "balance") {
+      seenLedger = true;
+      cash += event.amount;
+    } else if (event.kind === "credit") {
+      seenLedger = true;
+      credit = Math.max(0, credit + event.amount);
+    } else if (event.kind === "trade") {
+      const net = netOf(event.trade);
+      let delta = net;
+      if (seenLedger && net < 0) {
+        const nextCash = cash + net;
+        if (nextCash < 0) {
+          const covered = Math.min(credit, -nextCash);
+          credit -= covered;
+          delta = net + covered;
+        }
+      }
+      cash += delta;
+      cashNets.set(cashKey(event.trade), delta);
+    }
+  }
+  state.cashNets = cashNets;
+}
+
+function cashOf(trade) {
+  const saved = state.cashNets.get(cashKey(trade));
+  return Number.isFinite(saved) ? saved : netOf(trade);
+}
+
 function isBreakEven(trade) {
   const net = netOf(trade);
   return net >= -BE_LOSS_MAX && net <= BE_PROFIT_MAX;
@@ -171,14 +236,14 @@ function matchesView(trade, now = new Date()) {
 }
 
 function summarize(trades) {
-  const nets = trades.map(netOf);
+  const cash = trades.map(cashOf);
   const be = trades.filter(isBreakEven);
   const decided = trades.filter((t) => !isBreakEven(t));
   const wins = decided.filter((t) => netOf(t) > 0);
   const losses = decided.filter((t) => netOf(t) < 0);
-  const pnl = nets.reduce((a, b) => a + b, 0);
-  const grossWin = wins.reduce((a, t) => a + netOf(t), 0);
-  const grossLoss = Math.abs(losses.reduce((a, t) => a + netOf(t), 0));
+  const pnl = cash.reduce((a, b) => a + b, 0);
+  const grossWin = wins.reduce((a, t) => a + cashOf(t), 0);
+  const grossLoss = Math.abs(losses.reduce((a, t) => a + cashOf(t), 0));
   const decidedCount = wins.length + losses.length;
   return {
     count: trades.length,
@@ -190,8 +255,8 @@ function summarize(trades) {
     profitFactor: grossLoss ? grossWin / grossLoss : grossWin > 0 ? Infinity : 0,
     avgWin: wins.length ? grossWin / wins.length : 0,
     avgLoss: losses.length ? grossLoss / losses.length : 0,
-    best: nets.length ? Math.max(...nets) : 0,
-    worst: nets.length ? Math.min(...nets) : 0,
+    best: cash.length ? Math.max(...cash) : 0,
+    worst: cash.length ? Math.min(...cash) : 0,
   };
 }
 
@@ -200,7 +265,7 @@ function equitySeries(trades) {
   for (const trade of trades) {
     const key = tradeDayKey(trade);
     if (!key) continue;
-    byDay.set(key, (byDay.get(key) || 0) + netOf(trade));
+    byDay.set(key, (byDay.get(key) || 0) + cashOf(trade));
   }
   let equity = 0;
   return [...byDay.keys()].sort().map((day) => {
@@ -482,8 +547,8 @@ function renderTable(trades) {
   const body = document.getElementById("tradeBody");
   const sorted = [...trades].sort((a, b) => parseMt5Time(b.closeTime) - parseMt5Time(a.closeTime));
   body.innerHTML = sorted.map((t) => {
-    const net = netOf(t);
-    const outcome = isBreakEven(t) ? "be" : net > 0 ? "win" : "loss";
+    const net = cashOf(t);
+    const outcome = isBreakEven(t) ? "be" : netOf(t) > 0 ? "win" : "loss";
     return `<tr>
       <td>${t.closeTime}</td>
       <td>${t.symbol}</td>
@@ -573,6 +638,12 @@ function render() {
     : rangeLabel(state.range);
   document.getElementById("metaLine").textContent =
     `${all.length} closed positions · viewing ${viewLabel} · click a P&L card or a calendar day to filter`;
+  const creditNote = document.getElementById("creditNote");
+  if (creditNote) {
+    creditNote.textContent = state.ledger.length
+      ? "Losses are cash. Credit covers a loss only after that deposit is used up."
+      : "Showing full trade results until the export includes deposit and credit history.";
+  }
 
   renderCalendar(all);
 
@@ -597,7 +668,7 @@ function saveTradesLocally(trades) {
       localStorage.removeItem(STORAGE_KEY);
       return;
     }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ trades }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ trades, ledger: state.ledger || [] }));
   } catch {
     /* Safari private mode / quota — import still works for this session */
   }
@@ -606,6 +677,7 @@ function saveTradesLocally(trades) {
 function readTradesLocally() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    if (Array.isArray(saved?.ledger)) state.ledger = saved.ledger;
     return Array.isArray(saved?.trades) ? saved.trades : null;
   } catch {
     return null;
@@ -628,13 +700,17 @@ function preferredCalendarMonth(trades) {
 }
 
 function applyFeed(data, options) {
-  loadTrades(data.trades, options);
+  state.ledger = Array.isArray(data?.ledger) ? data.ledger : [];
+  loadTrades(Array.isArray(data?.trades) ? data.trades : [], options);
 }
 
 function loadTrades(trades, { persist = true } = {}) {
   const next = JSON.stringify(trades);
-  if (next === JSON.stringify(state.trades)) return;
+  const ledgerNext = JSON.stringify(state.ledger || []);
+  if (next === JSON.stringify(state.trades) && ledgerNext === state.ledgerKey) return;
   state.trades = trades;
+  state.ledgerKey = ledgerNext;
+  rebuildCash();
   if (!state.calendarTouched) state.calendarMonth = preferredCalendarMonth(trades);
   if (persist) saveTradesLocally(trades);
   render();
@@ -687,6 +763,7 @@ document.getElementById("calGrid").addEventListener("click", (event) => {
 });
 
 if (window.IMPORTED_TRADES?.trades?.length) {
+  state.ledger = Array.isArray(window.IMPORTED_TRADES.ledger) ? window.IMPORTED_TRADES.ledger : [];
   loadTrades(window.IMPORTED_TRADES.trades, { persist: false });
 } else {
   const saved = readTradesLocally();
