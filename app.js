@@ -93,8 +93,6 @@ const state = {
   day: null,
   calendarMonth: new Date(),
   calendarTouched: false,
-  // MT5 server is GMT+3 while Europe is on summer time. The export overrides this.
-  serverUtcOffsetMinutes: 180,
   charts: {},
 };
 
@@ -133,70 +131,6 @@ function localDateKey(date) {
   return `${y}-${m}-${d}`;
 }
 
-function utcDateKey(ms) {
-  const date = new Date(ms);
-  const y = date.getUTCFullYear();
-  const m = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const d = String(date.getUTCDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
-function nthWeekday(year, monthIndex, weekday, n) {
-  const first = new Date(Date.UTC(year, monthIndex, 1));
-  const delta = (weekday - first.getUTCDay() + 7) % 7;
-  return 1 + delta + (n - 1) * 7;
-}
-
-function nyOffsetSeconds(utcMs) {
-  const year = new Date(utcMs).getUTCFullYear();
-  const startDay = nthWeekday(year, 2, 0, 2);
-  const endDay = nthWeekday(year, 10, 0, 1);
-  const dstStart = Date.UTC(year, 2, startDay, 7, 0, 0);
-  const dstEnd = Date.UTC(year, 10, endDay, 6, 0, 0);
-  return utcMs >= dstStart && utcMs < dstEnd ? -4 * 3600 : -5 * 3600;
-}
-
-function sessionDayKeyFromUtcMs(utcMs) {
-  const nyMs = utcMs + nyOffsetSeconds(utcMs) * 1000;
-  const ny = new Date(nyMs);
-  let y = ny.getUTCFullYear();
-  let m = ny.getUTCMonth();
-  let d = ny.getUTCDate();
-  if (ny.getUTCHours() >= 17) {
-    const next = new Date(Date.UTC(y, m, d) + 86400000);
-    y = next.getUTCFullYear();
-    m = next.getUTCMonth();
-    d = next.getUTCDate();
-  }
-  return utcDateKey(Date.UTC(y, m, d));
-}
-
-function brokerUtcMs(value) {
-  const match = String(value || "").trim().match(/^(\d{4})[.-](\d{2})[.-](\d{2})[ T](\d{2}):(\d{2}):(\d{2})/);
-  if (!match) return null;
-  const wall = Date.UTC(+match[1], +match[2] - 1, +match[3], +match[4], +match[5], +match[6]);
-  return wall - state.serverUtcOffsetMinutes * 60 * 1000;
-}
-
-function sessionDayKeyFromBroker(value) {
-  const utcMs = brokerUtcMs(value);
-  if (utcMs == null) return null;
-  return sessionDayKeyFromUtcMs(utcMs);
-}
-
-function tradeSessionKey(trade) {
-  return sessionDayKeyFromBroker(trade.openTime) || sessionDayKeyFromBroker(trade.closeTime);
-}
-
-function sessionDayStartKey(dayKey) {
-  const [y, m, d] = dayKey.split("-").map(Number);
-  const date = new Date(Date.UTC(y, m - 1, d));
-  const weekday = date.getUTCDay();
-  const offset = weekday === 0 ? 6 : weekday - 1;
-  date.setUTCDate(date.getUTCDate() - offset);
-  return utcDateKey(date.getTime());
-}
-
 function compactPnl(n) {
   const abs = Math.abs(n);
   const sign = n < 0 ? "-" : "";
@@ -217,18 +151,22 @@ function isBreakEven(trade) {
   return net >= -BE_LOSS_MAX && net <= BE_PROFIT_MAX;
 }
 
+function tradeDayKey(trade) {
+  const close = parseMt5Time(trade.closeTime);
+  return close ? localDateKey(close) : null;
+}
+
 function inRange(trade, range, now = new Date()) {
-  const key = tradeSessionKey(trade);
-  if (!key) return false;
-  const today = sessionDayKeyFromUtcMs(now.getTime());
-  if (range === "today") return key === today;
-  if (range === "week") return key >= sessionDayStartKey(today);
-  if (range === "month") return key.slice(0, 7) === today.slice(0, 7);
+  const close = parseMt5Time(trade.closeTime);
+  if (!close) return false;
+  if (range === "today") return close >= startOfDay(now);
+  if (range === "week") return close >= startOfWeek(now);
+  if (range === "month") return close >= startOfMonth(now);
   return true;
 }
 
 function matchesView(trade, now = new Date()) {
-  if (state.day) return tradeSessionKey(trade) === state.day;
+  if (state.day) return tradeDayKey(trade) === state.day;
   return inRange(trade, state.range, now);
 }
 
@@ -260,7 +198,7 @@ function summarize(trades) {
 function equitySeries(trades) {
   const byDay = new Map();
   for (const trade of trades) {
-    const key = tradeSessionKey(trade);
+    const key = tradeDayKey(trade);
     if (!key) continue;
     byDay.set(key, (byDay.get(key) || 0) + netOf(trade));
   }
@@ -279,7 +217,7 @@ function equitySeries(trades) {
 function tradesByDay(trades) {
   const map = new Map();
   for (const trade of trades) {
-    const key = tradeSessionKey(trade);
+    const key = tradeDayKey(trade);
     if (!key) continue;
     if (!map.has(key)) map.set(key, []);
     map.get(key).push(trade);
@@ -487,7 +425,7 @@ function renderCalendar(trades) {
   const byDay = tradesByDay(trades);
   const firstWeekday = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const todayKey = sessionDayKeyFromUtcMs(Date.now());
+  const todayKey = localDateKey(new Date());
   const cells = [];
 
   for (let i = 0; i < firstWeekday; i += 1) {
@@ -679,7 +617,7 @@ function preferredCalendarMonth(trades) {
   let latest = null;
   let hasThisMonth = false;
   for (const trade of trades) {
-    const key = tradeSessionKey(trade);
+    const key = tradeDayKey(trade);
     if (!key) continue;
     const session = new Date(`${key}T00:00:00`);
     if (session >= thisMonth) hasThisMonth = true;
@@ -690,12 +628,7 @@ function preferredCalendarMonth(trades) {
 }
 
 function applyFeed(data, options) {
-  const offset = Number(data?.serverUtcOffsetMinutes);
-  const offsetChanged = Number.isFinite(offset) && offset !== state.serverUtcOffsetMinutes;
-  if (Number.isFinite(offset)) state.serverUtcOffsetMinutes = offset;
-  const unchanged = JSON.stringify(data.trades) === JSON.stringify(state.trades);
   loadTrades(data.trades, options);
-  if (offsetChanged && unchanged) render();
 }
 
 function loadTrades(trades, { persist = true } = {}) {

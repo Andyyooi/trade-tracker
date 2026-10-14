@@ -46,22 +46,26 @@ def push_gist(count)
   )
   if status.success?
     puts "#{Time.now.strftime("%H:%M:%S")} pushed #{count} trades to gist"
+    true
   else
     puts "#{Time.now.strftime("%H:%M:%S")} gist push failed: #{err.empty? ? out : err}"
+    false
   end
 end
 
 def push_repo(count)
   Dir.chdir(ROOT) do
     status, = Open3.capture2("git", "status", "--porcelain", "trades.json")
-    return if status.strip.empty?
+    return true if status.strip.empty?
 
-    return unless system("git", "add", "trades.json")
-    return unless system("git", "commit", "-m", "Update trades snapshot (#{count} closed)")
+    return false unless system("git", "add", "trades.json")
+    return false unless system("git", "commit", "-m", "Update trades snapshot (#{count} closed)")
     if system("git", "push", "origin", "HEAD")
       puts "#{Time.now.strftime("%H:%M:%S")} pushed trades.json to GitHub repo"
+      true
     else
       puts "#{Time.now.strftime("%H:%M:%S")} git push failed"
+      false
     end
   end
 end
@@ -72,15 +76,22 @@ loop do
     raw = File.read(SRC)
     digest = Digest::SHA256.hexdigest(raw)
     if digest != last_digest
-      data = JSON.parse(raw)
+      begin
+        data = JSON.parse(raw)
+      rescue JSON::ParserError
+        sleep 2
+        next
+      end
       pretty = JSON.pretty_generate(data)
       File.write(DST_JSON, pretty)
       File.write(DST_JS, "window.IMPORTED_TRADES = #{pretty};\n")
       count = Array(data["trades"]).size
       puts "#{Time.now.strftime("%H:%M:%S")} synced #{count} closed trades"
-      push_gist(count) if PUSH_TO_GIST
-      push_repo(count) if PUSH_TO_GITHUB
-      last_digest = digest
+      gist_ok = PUSH_TO_GIST ? push_gist(count) : true
+      repo_ok = PUSH_TO_GITHUB ? push_repo(count) : true
+      # Keep retrying this snapshot if the gist push timed out.
+      last_digest = digest if gist_ok && repo_ok
+      sleep 30 unless gist_ok && repo_ok
     end
   end
   sleep 2

@@ -15,57 +15,24 @@ CANDIDATES = [
   )
 ].freeze
 
-DEFAULT_SERVER_UTC_OFFSET_MINUTES = 180
-
-def wall_parts(value)
-  match = value.to_s.strip.match(/(\d{4})[.\-](\d{2})[.\-](\d{2})[ T](\d{2}):(\d{2}):(\d{2})/)
-  return nil unless match
-
-  match.captures.map(&:to_i)
+def parse_mt5_time(value)
+  Time.strptime(value.to_s.strip.tr(".", "-"), "%Y-%m-%d %H:%M:%S")
+rescue ArgumentError
+  nil
 end
 
-def nth_weekday(year, month, wday, n)
-  first = Time.utc(year, month, 1)
-  delta = (wday - first.wday) % 7
-  1 + delta + (n - 1) * 7
+def start_of_day(time)
+  Time.local(time.year, time.month, time.day)
 end
 
-def ny_offset_seconds(utc)
-  year = utc.utc.year
-  start_day = nth_weekday(year, 3, 0, 2)
-  end_day = nth_weekday(year, 11, 0, 1)
-  dst_start = Time.utc(year, 3, start_day, 7, 0, 0)
-  dst_end = Time.utc(year, 11, end_day, 6, 0, 0)
-  utc >= dst_start && utc < dst_end ? -4 * 3600 : -5 * 3600
-end
-
-def session_date_from_instant(time)
-  utc = time.utc
-  ny = Time.at(utc.to_i + ny_offset_seconds(utc)).utc
-  year, month, day = ny.year, ny.month, ny.day
-  if ny.hour >= 17
-    rolled = Time.utc(year, month, day) + 86_400
-    year, month, day = rolled.year, rolled.month, rolled.day
-  end
-  Time.utc(year, month, day)
-end
-
-def session_date(value, offset_minutes)
-  parts = wall_parts(value)
-  return nil unless parts
-
-  year, month, day, hour, minute, second = parts
-  utc = Time.utc(year, month, day, hour, minute, second) - (offset_minutes * 60)
-  session_date_from_instant(utc)
-end
-
-def trade_session(trade, offset_minutes)
-  session_date(trade["openTime"], offset_minutes) || session_date(trade["closeTime"], offset_minutes)
-end
-
-def start_of_week(day)
+def start_of_week(time)
+  day = start_of_day(time)
   offset = day.wday.zero? ? 6 : day.wday - 1
-  day - (offset * 86_400)
+  day - (offset * 24 * 60 * 60)
+end
+
+def start_of_month(time)
+  Time.local(time.year, time.month, 1)
 end
 
 def net_of(trade)
@@ -81,14 +48,14 @@ def break_even?(trade)
   n >= -BE_LOSS_MAX && n <= BE_PROFIT_MAX
 end
 
-def in_range?(trade, range, today, offset_minutes)
-  opened = trade_session(trade, offset_minutes)
-  return false unless opened
+def in_range?(trade, range, now)
+  close = parse_mt5_time(trade["closeTime"])
+  return false unless close
 
   case range
-  when :today then opened == today
-  when :week then opened >= start_of_week(today)
-  when :month then opened.year == today.year && opened.month == today.month
+  when :today then close >= start_of_day(now)
+  when :week then close >= start_of_week(now)
+  when :month then close >= start_of_month(now)
   else true
   end
 end
@@ -122,12 +89,9 @@ payload =
   else
     data = JSON.parse(File.read(src))
     trades = Array(data["trades"])
-    offset = data["serverUtcOffsetMinutes"]
-    offset = DEFAULT_SERVER_UTC_OFFSET_MINUTES if offset.nil?
-    today_session = session_date_from_instant(now)
-    today = summarize(trades.select { |t| in_range?(t, :today, today_session, offset) })
-    week = summarize(trades.select { |t| in_range?(t, :week, today_session, offset) })
-    month = summarize(trades.select { |t| in_range?(t, :month, today_session, offset) })
+    today = summarize(trades.select { |t| in_range?(t, :today, now) })
+    week = summarize(trades.select { |t| in_range?(t, :week, now) })
+    month = summarize(trades.select { |t| in_range?(t, :month, now) })
     all = summarize(trades)
     {
       today: today[:pnl],
